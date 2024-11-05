@@ -1,17 +1,24 @@
 ##Clases base, pueden cambiar en comparacion al uml debido al lenguaje python
 import copy
+import pygame
 
-class ObstaculoBosque(FactoryObstaculo):
-    def __init__(self):
-        self.x = 0
-        self.y = 0
-        self.tamaño = 0
-        self.comportamiento = "Hola"
+class ObstaculoBosque():
+    def __init__(self, ALTO, tipo):
+        self.x = 500
+        self.alto = 70
+        self.ancho = 30
+        if tipo == "Terrestre":
+            self.y = 600 - ALTO - self.alto
+        else:
+            self.y = ALTO - self.alto - 50
+        self.diseño = "blue"
+        self.comportamiento = "Tradicional"
+        self.rect = pygame.Rect(self.x, self.y, self.ancho, self.alto)
+   
+    def dibujar(self, ventana):
+        pygame.draw.rect(ventana, self.diseño, self.rect)
+        self.rect = pygame.Rect(self.x, self.y, self.ancho, self.alto)
     
-    def crear_obstaculo(self):
-        return ObstaculoBosque()
-    def actualizar():
-        return void()
     def clonar(self):
         return copy.deepcopy(self)
     

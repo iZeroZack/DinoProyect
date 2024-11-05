@@ -1,10 +1,15 @@
 ##Clases base, pueden cambiar en comparacion al uml debido al lenguaje python
 from abc import ABC, abstractmethod
 
-class FactoryObstaculo(ABC):
+class Obstaculo(ABC):
     @abstractmethod
-    def crear_obstaculo(self):
+    def crear_obstaculo_terrestre(self):
         pass
+
     @abstractmethod
-    def actualizar(self):
+    def crear_obstaculo_aereo(self):
+        pass
+
+    @abstractmethod
+    def dibujar(self):
         pass
