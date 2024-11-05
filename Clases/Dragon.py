@@ -1,10 +1,22 @@
 ##Clases base, pueden cambiar en comparacion al uml debido al lenguaje python
+import pygame
+
 class Dragon:
-    def __init__(self):
-        self.x = 0
-        self.y = 0
-        self.diseño = "Image"
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.ancho = 25
+        self.alto = 50
+        self.vida = 1
+        self.velocidad = 1
+        self.rect = pygame.Rect(self.x, self.y, self.ancho, self.alto)
+        self.diseño = "green"
         self.hitbox = "Hitbox"
+
+    def dibujar(self, ventana):
+        pygame.draw.rect(ventana, self.diseño, self.rect)
+        self.rect = pygame.Rect(self.x, self.y, self.ancho, self.alto)
+
 
     def saltar(self):
         return void()
