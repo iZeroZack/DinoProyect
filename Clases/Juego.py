@@ -30,10 +30,10 @@ for column in range(num_columnas):
     enlarged_frame = pg.transform.scale(frame, (frame_width * escala_factor, frame_height * escala_factor))
     animacion_move.append(enlarged_frame)
 ########
-GRAVEDAD = 0.5
+GRAVEDAD = 0.1
 jugando = True
 
-dragon = Dragon.Dragon(100, 100, animacion_move)
+dragon = Dragon.Dragon(100, ALTO-175, animacion_move)
 terreno = Terreno.Terreno(ANCHO, ALTO)
 
 obstaculos = []
@@ -45,7 +45,7 @@ activo = True
 while jugando:
     eventos = pg.event.get()
     teclas = pg.key.get_pressed()
-    dragon.saltar(teclas, activo)
+    dragon.saltar(teclas, ALTO)
 
     for evento in eventos:
         if evento.type == pg.QUIT:

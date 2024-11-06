@@ -9,8 +9,7 @@ class Dragon:
         self.ancho = 75
         self.alto = 75
         self.vida = 1
-        self.velocidad = 0.1
-        self.GRAVEDAD = 0.5
+        self.GRAVEDAD = 0.3
         self.rect = pg.Rect(self.x, self.y, self.ancho, self.alto) #hitbox
         self.animaciones = animaciones  # Lista de animaciones
         self.diseño = self.animaciones[0]  # Primer frame de animación
@@ -18,6 +17,8 @@ class Dragon:
         self.frame_actual = 0  # Controla el frame de la animación
         self.tiempo_ultimo_frame = 0  # Marca el tiempo del último cambio de frame
         self.intervalo_animacion = 100  # Intervalo entre cada frame
+        self.en_el_suelo = True
+        self.fin_salto = False
 
 #Modificar para salto tamvbien
     def actualizar(self):
@@ -42,11 +43,22 @@ class Dragon:
 
         pg.draw.rect(ventana, self.hitbox_color, self.rect, 2)
 
+ #############AGREGAR DELAY PARA CUANDO LLEGUE AL SUELO NO SALTAR INSTA
+    def saltar(self, teclas, ALTO):
+        if teclas[pg.K_UP] and self.en_el_suelo:
+            self.en_el_suelo = False
+            self.fin_salto = True
 
-    def saltar(self, teclas, activo):
-        if activo:
-            if teclas[pg.K_UP]:
-                self.y += self.velocidad - 150
+        if self.fin_salto:
+            if(self.y >= 250):
+                self.y -= self.GRAVEDAD + 0.2
+            else:
+                self.fin_salto = False
+        # Verificar si ha llegado al suelo
+        if self.y <= ALTO-175 and self.fin_salto == False:
+            self.y += self.GRAVEDAD
+        else:
+            self.en_el_suelo = True
 
     def disparar(self):
         return void()
