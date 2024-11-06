@@ -1,4 +1,7 @@
 import pygame as pg
+from PIL.ImageFont import truetype
+from sympy import false
+
 import Dragon
 import Terreno
 import ObstaculoFactory
@@ -27,7 +30,7 @@ for column in range(num_columnas):
     enlarged_frame = pg.transform.scale(frame, (frame_width * escala_factor, frame_height * escala_factor))
     animacion_move.append(enlarged_frame)
 ########
-GRAVEDAD = 2
+GRAVEDAD = 0.5
 jugando = True
 
 dragon = Dragon.Dragon(100, 100, animacion_move)
@@ -37,19 +40,12 @@ obstaculos = []
 fabrica = ObstaculoFactory.ObstaculoFactory()
 pino = fabrica.crear_obstaculo_terrestre(terreno.getAlto(), "Bosque")
 obstaculos.append(pino)
-
-def gestionarTeclas(teclas):
-    if teclas[pg.K_UP]:
-        dragon.y -= dragon.velocidad + 4
-    if teclas[pg.K_LEFT]:
-        dragon.x -= dragon.velocidad
-    if teclas[pg.K_RIGHT]:
-        dragon.x += dragon.velocidad
+activo = True
 
 while jugando:
     eventos = pg.event.get()
     teclas = pg.key.get_pressed()
-    gestionarTeclas(teclas)
+    dragon.saltar(teclas, activo)
 
     for evento in eventos:
         if evento.type == pg.QUIT:
@@ -65,6 +61,9 @@ while jugando:
 
     if dragon.y < ALTO - terreno.getAlto() - dragon.alto:
         dragon.y += GRAVEDAD
+        activo = False
+    else:
+        activo = True
 
     pg.display.update()
 

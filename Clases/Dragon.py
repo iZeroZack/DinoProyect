@@ -1,5 +1,5 @@
 ##Clases base, pueden cambiar en comparacion al uml debido al lenguaje python
-import pygame
+import pygame as pg
 
 
 class Dragon:
@@ -10,8 +10,8 @@ class Dragon:
         self.alto = 75
         self.vida = 1
         self.velocidad = 0.1
-        self.GRAVEDAD = 7
-        self.rect = pygame.Rect(self.x, self.y, self.ancho, self.alto) #hitbox
+        self.GRAVEDAD = 0.5
+        self.rect = pg.Rect(self.x, self.y, self.ancho, self.alto) #hitbox
         self.animaciones = animaciones  # Lista de animaciones
         self.diseño = self.animaciones[0]  # Primer frame de animación
         self.hitbox_color = (255, 0, 0)  # Rojo
@@ -22,7 +22,7 @@ class Dragon:
 #Modificar para salto tamvbien
     def actualizar(self):
         # Si ha pasado el tiempo suficiente, cambia el frame
-        tiempo_actual = pygame.time.get_ticks()
+        tiempo_actual = pg.time.get_ticks()
         if tiempo_actual - self.tiempo_ultimo_frame > self.intervalo_animacion:
             self.frame_actual += 1
             if self.frame_actual >= len(self.animaciones):
@@ -35,16 +35,19 @@ class Dragon:
         self.rect.y = self.y
 
     def dibujar(self, ventana):
-        offset_y = self.rect.height - self.diseño.get_height() +20  #LOS 2 AJUSTE IMAGEN ENTRE LA HITBOX
-        offset_x = self.rect.width - self.diseño.get_width() +20
+        desplazamiento_y = self.rect.height - self.diseño.get_height() +20  #LOS 2 AJUSTE IMAGEN ENTRE LA HITBOX
+        desplazamiento_x = self.rect.width - self.diseño.get_width() +20
 
-        ventana.blit(self.diseño, (self.rect.x + offset_x, self.rect.y + offset_y))
+        ventana.blit(self.diseño, (self.rect.x + desplazamiento_x, self.rect.y + desplazamiento_y))
 
-        pygame.draw.rect(ventana, self.hitbox_color, self.rect, 2)
+        pg.draw.rect(ventana, self.hitbox_color, self.rect, 2)
 
 
-    def saltar(self):
-        return void()
+    def saltar(self, teclas, activo):
+        if activo:
+            if teclas[pg.K_UP]:
+                self.y += self.velocidad - 150
+
     def disparar(self):
         return void()
     def agacharse(self):
