@@ -68,7 +68,7 @@ while jugando:
     terreno.dibujar(VENTANA)
     dragon.saltar(teclas, ALTO)
     dragon.agacharse(teclas)
-    dragon.actualizar()  # Actualiza la animación y la posición del dragón
+    dragon.actualizar()  # Actualiza la animación
     dragon.dibujar(VENTANA)
 
     for obstaculo in obstaculos:
