@@ -14,26 +14,39 @@ ANCHO = 800
 ALTO = 600
 VENTANA = pg.display.set_mode((ANCHO, ALTO))
 
-
-
 # Creación de la arreglo animacion
-sheet = pg.image.load("move.png").convert_alpha()
+run = pg.image.load("move.png").convert_alpha()
+jump = pg.image.load("jump.png").convert_alpha()
+dash = pg.image.load("dash.png").convert_alpha()
 animacion_move = []
+animacion_jump = []
+animacion_dash = []
 
 frame_width = 24
 frame_height = 24
 escala_factor = 5
-num_columnas = 6
-for column in range(num_columnas):
+num_columnas_run = 6
+num_columnas_jump = 4
+for column in range(num_columnas_run):
     animation = pg.Rect(frame_width * column, 0, frame_width, frame_height)
-    frame = sheet.subsurface(animation)
+    frame = run.subsurface(animation)
     enlarged_frame = pg.transform.scale(frame, (frame_width * escala_factor, frame_height * escala_factor))
     animacion_move.append(enlarged_frame)
+for column in range(num_columnas_jump):
+    animation = pg.Rect(frame_width * column, 0, frame_width, frame_height)
+    frame = jump.subsurface(animation)
+    enlarged_frame = pg.transform.scale(frame, (frame_width * escala_factor, frame_height * escala_factor))
+    animacion_jump.append(enlarged_frame)
+for column in range(num_columnas_run):
+    animation = pg.Rect(frame_width * column, 0, frame_width, frame_height)
+    frame = dash.subsurface(animation)
+    enlarged_frame = pg.transform.scale(frame, (frame_width * escala_factor, frame_height * escala_factor))
+    animacion_dash.append(enlarged_frame)
 ########
 GRAVEDAD = 0.1
 jugando = True
 
-dragon = Dragon.Dragon(100, ALTO-175, animacion_move)
+dragon = Dragon.Dragon(100, ALTO-175, animacion_move, animacion_jump, animacion_dash)
 terreno = Terreno.Terreno(ANCHO, ALTO)
 
 obstaculos = []
@@ -45,7 +58,7 @@ activo = True
 while jugando:
     eventos = pg.event.get()
     teclas = pg.key.get_pressed()
-    dragon.saltar(teclas, ALTO)
+
 
     for evento in eventos:
         if evento.type == pg.QUIT:
@@ -53,6 +66,8 @@ while jugando:
 
     VENTANA.fill("black")
     terreno.dibujar(VENTANA)
+    dragon.saltar(teclas, ALTO)
+    dragon.agacharse(teclas)
     dragon.actualizar()  # Actualiza la animación y la posición del dragón
     dragon.dibujar(VENTANA)
 
