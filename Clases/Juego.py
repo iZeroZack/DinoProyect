@@ -1,23 +1,23 @@
 import pygame as pg
-from PIL.ImageFont import truetype
-from sympy import false
-
+from ObstaculoBosque import ObstaculoFactoryBosque
+from ObstaculoDesierto import ObstaculoFactoryDesierto
+from ObstaculoTundra import ObstaculoFactoryTundra
 import Dragon
 import Terreno
-import ObstaculoFactory
+import Factory as Factory
 
 # Inicializa Pygame
 pg.init()
 
 
-ANCHO = 800
+ANCHO = 1000
 ALTO = 600
 VENTANA = pg.display.set_mode((ANCHO, ALTO))
 
 # Creación de la arreglo animacion
-run = pg.image.load("move.png").convert_alpha()
-jump = pg.image.load("jump.png").convert_alpha()
-dash = pg.image.load("dash.png").convert_alpha()
+run = pg.image.load("Clases/move.png").convert_alpha()
+jump = pg.image.load("Clases/jump.png").convert_alpha()
+dash = pg.image.load("Clases/dash.png").convert_alpha()
 animacion_move = []
 animacion_jump = []
 animacion_dash = []
@@ -45,20 +45,28 @@ for column in range(num_columnas_run):
 ########
 GRAVEDAD = 0.1
 jugando = True
-
+tematica = "Bosque"
 dragon = Dragon.Dragon(100, ALTO-175, animacion_move, animacion_jump, animacion_dash)
 terreno = Terreno.Terreno(ANCHO, ALTO)
 
-obstaculos = []
-fabrica = ObstaculoFactory.ObstaculoFactory()
-pino = fabrica.crear_obstaculo_terrestre(terreno.getAlto(), "Bosque")
-obstaculos.append(pino)
+if tematica == "Bosque":
+    fabrica = ObstaculoFactoryBosque()
+elif tematica == "Desierto":
+    fabrica = ObstaculoFactoryDesierto()
+elif tematica == "Tundra":
+    fabrica = ObstaculoFactoryTundra()
+else:
+    fabrica = ObstaculoFactoryBosque()
+
+obsTerrestre = fabrica.crear_obstaculo_terrestre(ALTO - terreno.getAlto())
+
+obsAereo = fabrica.crear_obstaculo_aereo(ALTO - terreno.getAlto())
+
 activo = True
 
 while jugando:
     eventos = pg.event.get()
     teclas = pg.key.get_pressed()
-
 
     for evento in eventos:
         if evento.type == pg.QUIT:
@@ -71,8 +79,8 @@ while jugando:
     dragon.actualizar()  # Actualiza la animación
     dragon.dibujar(VENTANA)
 
-    for obstaculo in obstaculos:
-        obstaculo.dibujar(VENTANA)
+    obsTerrestre.dibujar(VENTANA)
+    obsAereo.dibujar(VENTANA)
 
     if dragon.y < ALTO - terreno.getAlto() - dragon.alto:
         dragon.y += GRAVEDAD

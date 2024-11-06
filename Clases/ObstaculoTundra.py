@@ -1,19 +1,45 @@
-##Clases base, pueden cambiar en comparacion al uml debido al lenguaje python
+from Obstaculo import ObstaculoTerrestre, ObstaculoAereo
+from Factory import Factory
 import copy
+import pygame
 
-class ObstaculoTundra(FactoryObstaculo):
-    def __init__(self):
-        self.x = 0
-        self.y = 0
-        self.tamaño = 0
-        self.comportamiento = "Hola"
+class ObstaculoTundraTerrestre(ObstaculoTerrestre):
+    def __init__(self, ALTO):
+        self.x = 400
+        self.alto = 70
+        self.ancho = 40
+        self.y = ALTO - self.alto
+        self.diseño = "blue"
+        self.comportamiento = "Tradicional"
+        self.rect = pygame.Rect(self.x, self.y, self.ancho, self.alto)
+   
+    def dibujar(self, ventana):
+        pygame.draw.rect(ventana, self.diseño, self.rect)
+        self.rect = pygame.Rect(self.x, self.y, self.ancho, self.alto)
     
-    def crear_obstaculo(self):
-        return ObstaculoTundra()
-    def actualizar():
-        return void()
     def clonar(self):
         return copy.deepcopy(self)
+
+class ObstaculoTundraAereo(ObstaculoAereo):
+    def __init__(self, ALTO):
+        self.x = 500
+        self.alto = 40
+        self.ancho = 80
+        self.y = ALTO - (self.alto + self.ancho)
+        self.diseño = "blue"
+        self.comportamiento = "Tradicional"
+        self.rect = pygame.Rect(self.x, self.y, self.ancho, self.alto)
+   
+    def dibujar(self, ventana):
+        pygame.draw.rect(ventana, self.diseño, self.rect)
+        self.rect = pygame.Rect(self.x, self.y, self.ancho, self.alto)
     
-    def get_x(self):
-        return self.x
+    def clonar(self):
+        return copy.deepcopy(self)
+
+class ObstaculoFactoryTundra(Factory):
+    def crear_obstaculo_terrestre(self, alto) -> ObstaculoTerrestre:
+        return ObstaculoTundraTerrestre(alto)
+    
+    def crear_obstaculo_aereo(self, alto) -> ObstaculoAereo:
+        return ObstaculoTundraAereo(alto)

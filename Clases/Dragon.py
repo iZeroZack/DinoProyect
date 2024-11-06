@@ -61,7 +61,7 @@ class Dragon:
 
     def saltar(self, teclas, ALTO):
         tiempo_actual = pg.time.get_ticks()
-        if teclas[pg.K_UP] and self.en_el_suelo and (tiempo_actual - self.tiempo_ultimo_salto > self.cooldown_salto):
+        if teclas[pg.K_UP] or teclas[pg.K_SPACE] and self.en_el_suelo and (tiempo_actual - self.tiempo_ultimo_salto > self.cooldown_salto):
             self.en_el_suelo = False
             self.fin_salto = True
             self.tiempo_ultimo_salto = tiempo_actual
