@@ -5,6 +5,7 @@ from ObstaculoTundra import ObstaculoFactoryTundra
 import Dragon
 import Terreno
 import Factory as Factory
+import random as Random
 
 # Inicializa Pygame
 pg.init()
@@ -62,7 +63,28 @@ obsTerrestre = fabrica.crear_obstaculo_terrestre(ALTO - terreno.getAlto())
 
 obsAereo = fabrica.crear_obstaculo_aereo(ALTO - terreno.getAlto())
 
+obsRompible = obsTerrestre.clonar()
+
+obstaculo = obsTerrestre.clonar()
+
 activo = True
+
+diferenciaObstaculos = 1100
+
+def movimientoObstaculos() -> Factory:
+    eleccion = Random.randint(0, 2)
+    if eleccion == 0:
+        obs = obsTerrestre.clonar()
+
+    elif eleccion == 1:
+        obs = obsAereo.clonar()
+
+    else:
+        obs = obsTerrestre.clonar()
+        obs.diseño = "red"
+    
+    return obs
+        
 
 while jugando:
     eventos = pg.event.get()
@@ -73,20 +95,37 @@ while jugando:
             jugando = False
 
     VENTANA.fill("black")
-    terreno.dibujar(VENTANA)
-    dragon.saltar(teclas, ALTO)
     dragon.agacharse(teclas)
+    dragon.saltar(teclas, ALTO)
+    terreno.dibujar(VENTANA)
     dragon.actualizar()  # Actualiza la animación
     dragon.dibujar(VENTANA)
 
     obsTerrestre.dibujar(VENTANA)
     obsAereo.dibujar(VENTANA)
+    obsRompible.dibujar(VENTANA)
+    obstaculo.dibujar(VENTANA)
 
     if dragon.y < ALTO - terreno.getAlto() - dragon.alto:
         dragon.y += GRAVEDAD
         activo = False
     else:
         activo = True
+    
+    if obstaculo.rect.colliderect(dragon.rect):
+        dragon.vida -= 1
+    
+    diferenciaObstaculos -= 1
+    if diferenciaObstaculos == 0:
+        obstaculo = movimientoObstaculos()
+        diferenciaObstaculos = 1100
+    
+    if obstaculo.x > -obstaculo.ancho:
+        obstaculo.x -= 1
+
+    if dragon.vida == 0:
+        print("Perdiste")
+        jugando = False    
 
     pg.display.update()
 

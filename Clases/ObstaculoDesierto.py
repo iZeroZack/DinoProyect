@@ -5,7 +5,7 @@ import pygame
 
 class ObstaculoDesiertoTerrestre(ObstaculoTerrestre):
     def __init__(self, ALTO):
-        self.x = 400
+        self.x = 1000
         self.alto = 70
         self.ancho = 40
         self.y = ALTO - self.alto
@@ -22,7 +22,7 @@ class ObstaculoDesiertoTerrestre(ObstaculoTerrestre):
     
 class ObstaculoDesiertoAereo(ObstaculoAereo):
     def __init__(self, ALTO):
-        self.x = 500
+        self.x = 1000
         self.alto = 40
         self.ancho = 80
         self.y = ALTO - (self.alto + self.ancho)
