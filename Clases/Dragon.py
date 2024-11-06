@@ -21,11 +21,11 @@ class Dragon:
         self.intervalo_animacion = 100
         self.en_el_suelo = True
         self.fin_salto = False
+        self.cooldown_salto = 1300 ##COOLDAWN PARA EL SALTO
         self.tiempo_ultimo_salto = 0
-        self.cooldown_salto = 1000
         self.estado = "movimiento" #el estado de la animacion
-        self.animacion = None
-        self.tiempo_estado_salto = 0
+        self.animaciones = None
+        self.tiempo_llegada_suelo = 0
 
 #Modificar para salto tamvbien
     def actualizar(self):
@@ -35,14 +35,19 @@ class Dragon:
             self.intervalo_animacion = 100
         elif self.estado == "salto":
             self.animaciones = self.animacion_jump
-            self.intervalo_animacion = 150 ##CAMBIAR PARA MODIIFCAR EL INTERVALO DEL SALTO
+            self.intervalo_animacion = 200 ##CAMBIAR PARA MODIIFCAR EL INTERVALO DEL SALTO
         elif self.estado == "agachado":
             self.animaciones = self.animacion_dash
+            self.intervalo_animacion = 100
+
         tiempo_actual = pg.time.get_ticks()
         if tiempo_actual - self.tiempo_ultimo_frame > self.intervalo_animacion:
             self.frame_actual += 1
             if self.frame_actual >= len(self.animaciones):
-                self.frame_actual = 0  # Reiniciar la animación si se completa
+                if self.estado == "salto":
+                    self.frame_actual = len(self.animaciones) - 1
+                else:
+                    self.frame_actual = 0  # Reiniciar la animación si se completa
             self.diseño = self.animaciones[self.frame_actual]
             self.tiempo_ultimo_frame = tiempo_actual
 
@@ -58,34 +63,34 @@ class Dragon:
 
         pg.draw.rect(ventana, self.hitbox_color, self.rect, 2)
 
-
     def saltar(self, teclas, ALTO):
         tiempo_actual = pg.time.get_ticks()
-        if teclas[pg.K_UP] or teclas[pg.K_SPACE] and self.en_el_suelo and (tiempo_actual - self.tiempo_ultimo_salto > self.cooldown_salto):
+        if teclas[pg.K_SPACE] and self.en_el_suelo and tiempo_actual - self.tiempo_ultimo_salto > self.cooldown_salto:
             self.en_el_suelo = False
             self.fin_salto = True
-            self.tiempo_ultimo_salto = tiempo_actual
-            self.estado = "salto"
             self.frame_actual = 0
-            self.tiempo_estado_salto = tiempo_actual
+            self.tiempo_ultimo_salto = tiempo_actual
 
         if self.fin_salto:
+            self.estado="salto"
             if self.y >= 250:
                 self.y -= self.GRAVEDAD + 0.2
             else:
                 self.fin_salto = False
-
+        print(self.estado)
         # Verificar si ha llegado al suelo
         if self.y <= ALTO - 175 and not self.fin_salto:
             self.y += self.GRAVEDAD
         else:
             self.en_el_suelo = True
-            if tiempo_actual - self.tiempo_estado_salto > 700:
-                self.estado = "movimiento"
+            self.estado = "movimiento"
+
 
     def disparar(self):
         return void()
     def agacharse(self, teclas):
         if teclas[pg.K_DOWN]:
             self.estado = "agachado"
+        else:
+            self.estado = "movimiento"
 

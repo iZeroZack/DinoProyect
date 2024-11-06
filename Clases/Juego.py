@@ -15,9 +15,9 @@ ALTO = 600
 VENTANA = pg.display.set_mode((ANCHO, ALTO))
 
 # Creación de la arreglo animacion
-run = pg.image.load("Clases/move.png").convert_alpha()
-jump = pg.image.load("Clases/jump.png").convert_alpha()
-dash = pg.image.load("Clases/dash.png").convert_alpha()
+run = pg.image.load("move.png").convert_alpha()
+jump = pg.image.load("jump.png").convert_alpha()
+dash = pg.image.load("dash.png").convert_alpha()
 animacion_move = []
 animacion_jump = []
 animacion_dash = []
@@ -82,11 +82,6 @@ while jugando:
     obsTerrestre.dibujar(VENTANA)
     obsAereo.dibujar(VENTANA)
 
-    if dragon.y < ALTO - terreno.getAlto() - dragon.alto:
-        dragon.y += GRAVEDAD
-        activo = False
-    else:
-        activo = True
 
     pg.display.update()
 
