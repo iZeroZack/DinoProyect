@@ -1,7 +1,10 @@
-##Clases base, pueden cambiar en comparacion al uml debido al lenguaje python
 from abc import ABC, abstractmethod
 
 class Strategy(ABC):
     @abstractmethod
-    def transformar(self):
+    def accionTerrestre(self) -> int:
+        pass
+
+    @abstractmethod
+    def accionAerea(self) -> int:
         pass

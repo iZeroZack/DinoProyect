@@ -3,6 +3,8 @@ import Registro
 from ObstaculoBosque import ObstaculoFactoryBosque
 from ObstaculoDesierto import ObstaculoFactoryDesierto
 from ObstaculoTundra import ObstaculoFactoryTundra
+from StrategyDinamico import StrategyDinamico
+from StrategyTradicional import StrategyTradicional
 import Dragon
 import Terreno
 import Factory as Factory
@@ -16,6 +18,8 @@ ANCHO = 1000
 ALTO = 600
 VENTANA = pg.display.set_mode((ANCHO, ALTO))
 font = pg.font.SysFont("Arial", 30)
+colorLetraPrimario = "white"
+colorLetraSecundario = "black"
 
 # Creación de la arreglo animacion
 run = pg.image.load("Clases/Imagenes/move.png").convert_alpha()
@@ -47,8 +51,8 @@ for column in range(num_columnas_run):
     animacion_dash.append(enlarged_frame)
 
 def mostrarPuntaje(ventana, puntaje, puntajeMax):
-    txtPuntaje = font.render(f'Puntaje: {puntaje}', True, (255, 255, 255))
-    txtPuntajeMax = font.render(f'Puntaje Max: {puntajeMax}', True, (255, 255, 255))
+    txtPuntaje = font.render(f'Puntaje [{puntaje}]', True, colorLetraSecundario)
+    txtPuntajeMax = font.render(f'Puntaje Max [{puntajeMax}]', True, colorLetraSecundario)
     ventana.blit(txtPuntaje, (ANCHO/2 - 70, ALTO/2 - 15))
     ventana.blit(txtPuntajeMax, (ANCHO/2 - 100, ALTO/2 + 15))
 
@@ -58,25 +62,39 @@ registro = Registro.Registro()
 jugando = True
 jugar = False
 tematica = "Bosque"
+estrategia = StrategyTradicional()
 dragon = Dragon.Dragon(100, ALTO-175, animacion_move, animacion_jump, animacion_dash)
 terreno = Terreno.Terreno(ANCHO, ALTO)
 
 if tematica == "Bosque":
-    fabrica = ObstaculoFactoryBosque()
+    fabrica = ObstaculoFactoryBosque()    
+    fondo = pg.image.load("Clases/Imagenes/bosque.jpg").convert_alpha()
+    skinObstaculo = pg.image.load("Clases/Imagenes/bosque obs_terrestre.png").convert_alpha()
 elif tematica == "Desierto":
     fabrica = ObstaculoFactoryDesierto()
+    fondo = pg.image.load("Clases/Imagenes/desierto.jpg").convert_alpha()
+    skinObstaculo = pg.image.load("Clases/Imagenes/Cactus.png").convert_alpha()
 elif tematica == "Tundra":
     fabrica = ObstaculoFactoryTundra()
+    fondo = pg.image.load("Clases/Imagenes/tundra.jpg").convert_alpha()
+    skinObstaculo = pg.image.load("Clases/Imagenes/Tundra obs_terrestre.png").convert_alpha()
+    terreno.diseño = "gray"
+    colorLetra = "white"
+
 else:
     fabrica = ObstaculoFactoryBosque()
+    fondo = pg.image.load("Clases/Imagenes/bosque.jpg").convert_alpha()
+    skinObstaculo = pg.image.load("Clases/Imagenes/bosque obs_terrestre.png").convert_alpha()
 
-obsTerrestre = fabrica.crear_obstaculo_terrestre(ALTO - terreno.getAlto())
+obsTerrestre = fabrica.crear_obstaculo_terrestre(ALTO - terreno.getAlto(), estrategia)
 
-obsAereo = fabrica.crear_obstaculo_aereo(ALTO - terreno.getAlto())
+obsAereo = fabrica.crear_obstaculo_aereo(ALTO - terreno.getAlto(), estrategia)
 
 obsRompible = obsTerrestre.clonar()
 
 obstaculo = obsTerrestre.clonar()
+
+skinObstaculo = pg.transform.scale(skinObstaculo, (obstaculo.ancho+50, obstaculo.alto+50))
 
 activo = True
 
@@ -103,12 +121,11 @@ while jugando:
     for evento in eventos:
         if evento.type == pg.QUIT:
             jugando = False
-    
-    VENTANA.fill("black")
+    fondo = pg.transform.scale(fondo, (ANCHO, ALTO))
+    VENTANA.blit(fondo, (0, 0))
     terreno.dibujar(VENTANA)
-    txt = font.render("Presiona espacio para jugar", True, (255, 255, 255))
-    txt.set_alpha(200)
-    txtPuntajeMaximo = font.render(f'Puntaje Maximo {registro.getPuntajeMax()}', True, (255, 255, 255))
+    txt = font.render("Presiona espacio para jugar", True, colorLetraSecundario)
+    txtPuntajeMaximo = font.render(f'Puntaje Maximo [{registro.getPuntajeMax()}]', True, colorLetraSecundario)
     VENTANA.blit(txtPuntajeMaximo, (ANCHO/2 - 100, ALTO/2 + 15))
     VENTANA.blit(txt, (ANCHO/2 - 150, ALTO/2 - 15))
 
@@ -116,15 +133,9 @@ while jugando:
         dragon.vida = 1
         dragon.puntaje = 0
         jugar = True
-        dragon = Dragon.Dragon(100, ALTO-175, animacion_move, animacion_jump, animacion_dash)
-        terreno = Terreno.Terreno(ANCHO, ALTO)
-        obsTerrestre = fabrica.crear_obstaculo_terrestre(ALTO - terreno.getAlto())
-        obsAereo = fabrica.crear_obstaculo_aereo(ALTO - terreno.getAlto())
-        obsRompible = obsTerrestre.clonar()
         obstaculo = obsTerrestre.clonar()
         activo = True
         diferenciaObstaculos = 1500
-
     
     pg.display.update()
 
@@ -134,19 +145,17 @@ while jugando:
         for evento in eventos:
             if evento.type == pg.QUIT:
                 jugando = False
-        VENTANA.fill("black")
-        txtPuntajePartida = font.render(f'Puntaje: {dragon.puntaje}', True, (255, 255, 255))
-        VENTANA.blit(txtPuntajePartida, (ANCHO - 150, 10))
+        VENTANA.blit(fondo, (0, 0))
+        txtPuntajePartida = font.render(f'[ {dragon.puntaje} ]', True, colorLetraPrimario)
+        VENTANA.blit(txtPuntajePartida, (ANCHO/2-50, 10))
         dragon.agacharse(teclas)
         dragon.saltar(teclas, ALTO)
         terreno.dibujar(VENTANA)
         dragon.actualizar()  # Actualiza la animación
         dragon.dibujar(VENTANA)
 
-        obsTerrestre.dibujar(VENTANA)
-        obsAereo.dibujar(VENTANA)
-        obsRompible.dibujar(VENTANA)
         obstaculo.dibujar(VENTANA)
+        VENTANA.blit(skinObstaculo, (obstaculo.x-30, obstaculo.y-40))
         
         if obstaculo.rect.colliderect(dragon.rect):
             dragon.vida -= 1
@@ -154,6 +163,11 @@ while jugando:
         diferenciaObstaculos -= 1
         if diferenciaObstaculos <= 0:
             obstaculo = movimientoObstaculos()
+            numeroForStrategy = Random.randint(1, 10)
+            if numeroForStrategy%2 == 0:
+                obstaculo.comportamiento = StrategyDinamico()
+            else:
+                obstaculo.comportamiento = StrategyTradicional()
             diferenciaObstaculos = 1500
         
         if obstaculo.x > -obstaculo.ancho:
@@ -167,8 +181,6 @@ while jugando:
             registro.setPuntajeActual(dragon.puntaje)
             if dragon.puntaje > registro.getPuntajeMax():
                 registro.setPuntajeMax(dragon.puntaje)    
-            print("Puntaje actual: ", registro.getPuntajeActual())
-            print("Puntaje maximo: ", registro.getPuntajeMax())
             mostrarPuntaje(VENTANA, registro.getPuntajeActual(), registro.getPuntajeMax())
             pg.display.flip()
             pg.time.wait(2000)

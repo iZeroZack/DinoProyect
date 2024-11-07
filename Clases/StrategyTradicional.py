@@ -1,4 +1,10 @@
-##Clases base, pueden cambiar en comparacion al uml debido al lenguaje python
+from Strategy import Strategy
+import pygame
+
 class StrategyTradicional(Strategy):
-    def transformar(self):
-        return void()
+    
+    def accionTerrestre(self) -> int:
+        return 430
+    
+    def accionAerea(self) -> int:
+        return 400
