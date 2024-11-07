@@ -10,8 +10,9 @@ class Dragon:
         self.alto = 75
         self.vida = 1
         self.GRAVEDAD = 0.3
-        self.rect = pg.Rect(self.x, self.y, self.ancho, self.alto) #hitbox
-        self.rectAgachado = pg.Rect(self.x, self.y+15, self.ancho, self.alto-15)
+        self.rect = None
+        self.rectNormal = pg.Rect(self.x, self.y, self.ancho, self.alto) #hitbox
+        self.rectAgachado = pg.Rect(self.x, self.y+16, self.ancho, self.alto-16)
         self.animaciones_move = animaciones_move
         self.animacion_jump = animacion_jump
         self.animacion_dash = animacion_dash
@@ -22,28 +23,34 @@ class Dragon:
         self.intervalo_animacion = 100
         self.en_el_suelo = True
         self.fin_salto = False
+        self.cooldown_salto = 1300 ##COOLDAWN PARA EL SALTO
         self.tiempo_ultimo_salto = 0
-        self.cooldown_salto = 1300
         self.estado = "movimiento" #el estado de la animacion
-        self.animacion = None
-        self.tiempo_estado_salto = 0
+        self.animaciones = None
+        self.tiempo_llegada_suelo = 0
 
 #Modificar para salto tamvbien
     def actualizar(self):
         # Seleccionar la animación según el estado
+        self.rect = self.rectNormal
         if self.estado == "movimiento":
             self.animaciones = self.animaciones_move
             self.intervalo_animacion = 100
         elif self.estado == "salto":
             self.animaciones = self.animacion_jump
-            self.intervalo_animacion = 150 ##CAMBIAR PARA MODIIFCAR EL INTERVALO DEL SALTO
+            self.intervalo_animacion = 200 ##CAMBIAR PARA MODIIFCAR EL INTERVALO DEL SALTO
         elif self.estado == "agachado":
             self.animaciones = self.animacion_dash
+            self.intervalo_animacion = 100
+
         tiempo_actual = pg.time.get_ticks()
         if tiempo_actual - self.tiempo_ultimo_frame > self.intervalo_animacion:
             self.frame_actual += 1
             if self.frame_actual >= len(self.animaciones):
-                self.frame_actual = 0  # Reiniciar la animación si se completa
+                if self.estado == "salto":
+                    self.frame_actual = len(self.animaciones) - 1
+                else:
+                    self.frame_actual = 0  # Reiniciar la animación si se completa
             self.diseño = self.animaciones[self.frame_actual]
             self.tiempo_ultimo_frame = tiempo_actual
 
@@ -57,33 +64,34 @@ class Dragon:
 
         ventana.blit(self.diseño, (self.rect.x + desplazamiento_x, self.rect.y + desplazamiento_y))
         if self.estado == "agachado":
-            pg.draw.rect(ventana, self.hitbox_color, self.rectAgachado, 2)
-        else:
+            self.rect = self.rectAgachado
             pg.draw.rect(ventana, self.hitbox_color, self.rect, 2)
-
+        else:
+            self.rect = self.rectNormal
+            pg.draw.rect(ventana, self.hitbox_color, self.rect, 2)
 
     def saltar(self, teclas, ALTO):
         tiempo_actual = pg.time.get_ticks()
-        if teclas[pg.K_UP] or teclas[pg.K_SPACE] and self.en_el_suelo and tiempo_actual - self.tiempo_ultimo_salto > self.cooldown_salto:
+        if (teclas[pg.K_UP] or teclas[pg.K_SPACE]) and self.en_el_suelo and tiempo_actual - self.tiempo_ultimo_salto > self.cooldown_salto:
             self.en_el_suelo = False
             self.fin_salto = True
-            self.tiempo_ultimo_salto = tiempo_actual
-            self.estado = "salto"
             self.frame_actual = 0
-            self.tiempo_estado_salto = tiempo_actual
+            self.tiempo_ultimo_salto = tiempo_actual
 
         if self.fin_salto:
+            self.estado="salto"
             if self.y >= 250:
-                self.y -= self.GRAVEDAD + 0.5
+                self.y -= self.GRAVEDAD + 0.6
             else:
                 self.fin_salto = False
-
+        
         # Verificar si ha llegado al suelo
         if self.y <= ALTO - 175 and not self.fin_salto:
-            self.y += self.GRAVEDAD + 0.5
+            self.y += self.GRAVEDAD + 0.6
         else:
             self.en_el_suelo = True
             
+
 
     def disparar(self):
         return void()

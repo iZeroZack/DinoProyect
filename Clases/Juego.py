@@ -105,12 +105,6 @@ while jugando:
     obsAereo.dibujar(VENTANA)
     obsRompible.dibujar(VENTANA)
     obstaculo.dibujar(VENTANA)
-
-    if dragon.y < ALTO - terreno.getAlto() - dragon.alto:
-        dragon.y += GRAVEDAD
-        activo = False
-    else:
-        activo = True
     
     if obstaculo.rect.colliderect(dragon.rect):
         dragon.vida -= 1
