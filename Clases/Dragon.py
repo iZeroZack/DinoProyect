@@ -2,6 +2,7 @@ import pygame as pg
 
 class Dragon:
     def __init__(self, x, y, animaciones_move, animacion_jump, animacion_dash):
+        self.puntaje = 0
         self.x = x
         self.y = y
         self.ancho = 75
