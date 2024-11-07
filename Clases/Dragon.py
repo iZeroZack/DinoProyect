@@ -1,7 +1,7 @@
 import pygame as pg
 
 class Dragon:
-    def __init__(self, x, y, animaciones_move, animacion_jump, animacion_dash, animacion_dead):
+    def __init__(self, x, y, animaciones_move, animacion_jump, animacion_dash, animacion_dead, animacion_egg):
         self.puntaje = 0
         self.x = x
         self.y = y
@@ -16,6 +16,7 @@ class Dragon:
         self.animacion_jump = animacion_jump
         self.animacion_dash = animacion_dash
         self.animacion_dead = animacion_dead
+        self.animacion_egg = animacion_egg
         self.diseño = self.animaciones_move[0]
         self.hitbox_color = (255, 0, 0)  # Rojo
         self.frame_actual = 0
@@ -23,7 +24,7 @@ class Dragon:
         self.intervalo_animacion = 100
         self.en_el_suelo = True
         self.fin_salto = False
-        self.cooldown_salto = 1300 ##COOLDAWN PARA EL SALTO
+        self.cooldown_salto = 1000 ##COOLDAWN PARA EL SALTO
         self.tiempo_ultimo_salto = 0
         self.estado = "movimiento" #el estado de la animacion
         self.animaciones = None
@@ -45,6 +46,9 @@ class Dragon:
             self.intervalo_animacion = 100
         elif self.estado == "muerto":
             self.animaciones = self.animacion_dead
+            self.intervalo_animacion = 200
+        elif self.estado == "egg":
+            self.animaciones = self.animacion_egg
             self.intervalo_animacion = 200
 
         tiempo_actual = pg.time.get_ticks()
@@ -103,9 +107,12 @@ class Dragon:
         return void()
     
     def agacharse(self, teclas):
-        if teclas[pg.K_DOWN]:
-            self.estado = "agachado"
-        else:
-            self.estado = "movimiento"
+        if self.vivo:
+            if teclas[pg.K_DOWN]:
+                self.estado = "agachado"
+            else:
+                self.estado = "movimiento"
     def muerte(self):
         self.estado = "muerto"
+        self.vivo = False
+        print("si")
