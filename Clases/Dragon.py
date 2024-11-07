@@ -1,6 +1,4 @@
-##Clases base, pueden cambiar en comparacion al uml debido al lenguaje python
 import pygame as pg
-
 
 class Dragon:
     def __init__(self, x, y, animaciones_move, animacion_jump, animacion_dash):
