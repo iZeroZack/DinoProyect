@@ -18,9 +18,9 @@ VENTANA = pg.display.set_mode((ANCHO, ALTO))
 font = pg.font.SysFont("Arial", 30)
 
 # Creación de la arreglo animacion
-run = pg.image.load("Clases/move.png").convert_alpha()
-jump = pg.image.load("Clases/jump.png").convert_alpha()
-dash = pg.image.load("Clases/dash.png").convert_alpha()
+run = pg.image.load("Clases/Imagenes/move.png").convert_alpha()
+jump = pg.image.load("Clases/Imagenes/jump.png").convert_alpha()
+dash = pg.image.load("Clases/Imagenes/dash.png").convert_alpha()
 animacion_move = []
 animacion_jump = []
 animacion_dash = []
