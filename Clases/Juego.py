@@ -34,10 +34,10 @@ def animacion(n, imagen, escala):
         sprite.append(enlarged_frame)
     return sprite
 
-animacion_move = animacion(6, "Imagenes/move.png", 5)
-animacion_jump = animacion(4, "Imagenes/jump.png", 5)
-animacion_dash = animacion(6, "Imagenes/dash.png", 5)
-animacion_dead = animacion(5, "Imagenes/dead.png", 5)
+animacion_move = animacion(6, "Clases/Imagenes/move.png", 5)
+animacion_jump = animacion(4, "Clases/Imagenes/jump.png", 5)
+animacion_dash = animacion(6, "Clases/Imagenes/dash.png", 5)
+animacion_dead = animacion(5, "Clases/Imagenes/dead.png", 5)
 
 
 def mostrarPuntaje(ventana, puntaje, puntajeMax):
@@ -53,7 +53,7 @@ jugando = True
 jugar = False
 tematica = "Bosque"
 estrategia = StrategyTradicional()
-dragon = Dragon.Dragon(100, ALTO-175, animacion_move, animacion_jump, animacion_dash)
+dragon = Dragon.Dragon(100, ALTO-175, animacion_move, animacion_jump, animacion_dash, animacion_dead)
 terreno = Terreno.Terreno(ANCHO, ALTO)
 
 if tematica == "Bosque":
