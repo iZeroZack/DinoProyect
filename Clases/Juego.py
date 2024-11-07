@@ -21,34 +21,24 @@ font = pg.font.SysFont("Arial", 30)
 colorLetraPrimario = "white"
 colorLetraSecundario = "black"
 
-# Creación de la arreglo animacion
-run = pg.image.load("Clases/Imagenes/move.png").convert_alpha()
-jump = pg.image.load("Clases/Imagenes/jump.png").convert_alpha()
-dash = pg.image.load("Clases/Imagenes/dash.png").convert_alpha()
-animacion_move = []
-animacion_jump = []
-animacion_dash = []
+def animacion(n, imagen, escala):
+    frame_width = 24
+    frame_height = 24
+    png = pg.image.load(imagen).convert_alpha()
+    escala_factor = escala # 5
+    sprite = []
+    for column in range(n):
+        animation = pg.Rect(frame_width * column, 0, frame_width, frame_height)
+        frame = png.subsurface(animation)
+        enlarged_frame = pg.transform.scale(frame, (frame_width * escala_factor, frame_height * escala_factor))
+        sprite.append(enlarged_frame)
+    return sprite
 
-frame_width = 24
-frame_height = 24
-escala_factor = 5
-num_columnas_run = 6
-num_columnas_jump = 4
-for column in range(num_columnas_run):
-    animation = pg.Rect(frame_width * column, 0, frame_width, frame_height)
-    frame = run.subsurface(animation)
-    enlarged_frame = pg.transform.scale(frame, (frame_width * escala_factor, frame_height * escala_factor))
-    animacion_move.append(enlarged_frame)
-for column in range(num_columnas_jump):
-    animation = pg.Rect(frame_width * column, 0, frame_width, frame_height)
-    frame = jump.subsurface(animation)
-    enlarged_frame = pg.transform.scale(frame, (frame_width * escala_factor, frame_height * escala_factor))
-    animacion_jump.append(enlarged_frame)
-for column in range(num_columnas_run):
-    animation = pg.Rect(frame_width * column, 0, frame_width, frame_height)
-    frame = dash.subsurface(animation)
-    enlarged_frame = pg.transform.scale(frame, (frame_width * escala_factor, frame_height * escala_factor))
-    animacion_dash.append(enlarged_frame)
+animacion_move = animacion(6, "Imagenes/move.png", 5)
+animacion_jump = animacion(4, "Imagenes/jump.png", 5)
+animacion_dash = animacion(6, "Imagenes/dash.png", 5)
+animacion_dead = animacion(5, "Imagenes/dead.png", 5)
+
 
 def mostrarPuntaje(ventana, puntaje, puntajeMax):
     txtPuntaje = font.render(f'Puntaje [{puntaje}]', True, colorLetraSecundario)
@@ -113,6 +103,7 @@ def movimientoObstaculos() -> Factory:
         obs.diseño = "red"
     
     return obs
+        
 
 while jugando:
     eventos = pg.event.get()
@@ -136,7 +127,7 @@ while jugando:
         obstaculo = obsTerrestre.clonar()
         activo = True
         diferenciaObstaculos = 1500
-    
+
     pg.display.update()
 
     while jugar:
@@ -159,7 +150,7 @@ while jugando:
         
         if obstaculo.rect.colliderect(dragon.rect):
             dragon.vida -= 1
-        
+
         diferenciaObstaculos -= 1
         if diferenciaObstaculos <= 0:
             obstaculo = movimientoObstaculos()
@@ -169,7 +160,7 @@ while jugando:
             else:
                 obstaculo.comportamiento = StrategyTradicional()
             diferenciaObstaculos = 1500
-        
+
         if obstaculo.x > -obstaculo.ancho:
             obstaculo.x -= 0.7
 
@@ -185,7 +176,7 @@ while jugando:
             pg.display.flip()
             pg.time.wait(2000)
             jugar = False
-            
+
         pg.display.update()
 
 pg.quit()

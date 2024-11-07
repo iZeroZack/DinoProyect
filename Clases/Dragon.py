@@ -1,7 +1,7 @@
 import pygame as pg
 
 class Dragon:
-    def __init__(self, x, y, animaciones_move, animacion_jump, animacion_dash):
+    def __init__(self, x, y, animaciones_move, animacion_jump, animacion_dash, animacion_dead):
         self.puntaje = 0
         self.x = x
         self.y = y
@@ -15,6 +15,7 @@ class Dragon:
         self.animaciones_move = animaciones_move
         self.animacion_jump = animacion_jump
         self.animacion_dash = animacion_dash
+        self.animacion_dead = animacion_dead
         self.diseño = self.animaciones_move[0]
         self.hitbox_color = (255, 0, 0)  # Rojo
         self.frame_actual = 0
@@ -27,6 +28,7 @@ class Dragon:
         self.estado = "movimiento" #el estado de la animacion
         self.animaciones = None
         self.tiempo_llegada_suelo = 0
+        self.vivo = True
 
 #Modificar para salto tamvbien
     def actualizar(self):
@@ -41,6 +43,9 @@ class Dragon:
         elif self.estado == "agachado":
             self.animaciones = self.animacion_dash
             self.intervalo_animacion = 100
+        elif self.estado == "muerto":
+            self.animaciones = self.animacion_dead
+            self.intervalo_animacion = 200
 
         tiempo_actual = pg.time.get_ticks()
         if tiempo_actual - self.tiempo_ultimo_frame > self.intervalo_animacion:
@@ -71,24 +76,25 @@ class Dragon:
 
     def saltar(self, teclas, ALTO):
         tiempo_actual = pg.time.get_ticks()
-        if (teclas[pg.K_UP] or teclas[pg.K_SPACE]) and self.en_el_suelo and tiempo_actual - self.tiempo_ultimo_salto > self.cooldown_salto:
-            self.en_el_suelo = False
-            self.fin_salto = True
-            self.frame_actual = 0
-            self.tiempo_ultimo_salto = tiempo_actual
+        if self.vivo:
+            if (teclas[pg.K_UP] or teclas[pg.K_SPACE]) and self.en_el_suelo and tiempo_actual - self.tiempo_ultimo_salto > self.cooldown_salto:
+                self.en_el_suelo = False
+                self.fin_salto = True
+                self.frame_actual = 0
+                self.tiempo_ultimo_salto = tiempo_actual
 
-        if self.fin_salto:
-            self.estado="salto"
-            if self.y >= 250:
-                self.y -= self.GRAVEDAD + 0.6
+            if self.fin_salto:
+                self.estado="salto"
+                if self.y >= 250:
+                    self.y -= self.GRAVEDAD + 0.4
+                else:
+                    self.fin_salto = False
+
+            # Verificar si ha llegado al suelo
+            if self.y <= ALTO - 175 and not self.fin_salto:
+                self.y += self.GRAVEDAD + 0.4
             else:
-                self.fin_salto = False
-        
-        # Verificar si ha llegado al suelo
-        if self.y <= ALTO - 175 and not self.fin_salto:
-            self.y += self.GRAVEDAD + 0.6
-        else:
-            self.en_el_suelo = True
+                self.en_el_suelo = True
             
 
 
@@ -101,4 +107,5 @@ class Dragon:
             self.estado = "agachado"
         else:
             self.estado = "movimiento"
-
+    def muerte(self):
+        self.estado = "muerto"
