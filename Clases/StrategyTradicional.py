@@ -8,3 +8,7 @@ class StrategyTradicional(Strategy):
     
     def accionAerea(self) -> int:
         return 400
+
+    def accionMoneda(self) -> int:
+        print("Misma Posicion")
+        return 320, False

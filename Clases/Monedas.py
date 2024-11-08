@@ -1,31 +1,45 @@
-##Clases base, pueden cambiar en comparacion al uml debido al lenguaje python
-class Monedas(FactoryObstaculo):
-    def __init__(self):
-        self.x = 0
-        self.y = 0
-        self.tamaño = 0
-        self.comportamiento = "Hola"
+from Obstaculo import ObstaculoAereo
+from Factory import Factory
+from Strategy import Strategy
+import copy
+import pygame
+import random
 
-    def crear_obstaculo(self):
-        return Monedas()
-    def actualizar():
-        return void()
+class Monedas(ObstaculoAereo):
+    def __init__(self, ALTO, strategy: Strategy):
+        self.x = 1000
+        self.alto = 40
+        self.ancho = 40
+        self.y = ALTO - (self.alto + self.ancho + 80)
+        self.diseño = "black"
+        self.comportamiento = strategy
+        self.listo = False
+        self.esDinamico = False
+        self.wait = 300
+        self.rect = pygame.Rect(self.x, self.y, self.ancho, self.alto)
+   
+    def dibujar(self, ventana):
+        self.wait -= 1
+        pygame.draw.rect(ventana, self.diseño, self.rect)
+        self.rect = pygame.Rect(self.x, self.y, self.ancho, self.alto)
+        if self.wait > 0 and not self.listo:
+            self.y, self.esDinamico = self.comportamiento.accionMoneda()
+            self.listo = True
+
+        if self.esDinamico and self.wait >= 100 and self.wait <= 200:
+            self.y = 320
+
+        if self.esDinamico and self.wait == 0:
+            self.wait = 300
+            self.esDinamico = False
+            self.listo = False
+    
     def clonar(self):
         return copy.deepcopy(self)
     
-    def get_x(self):
-        return self.x
-    def get_y(self):
-        return self.y
-    def get_tamaño(self):
-        return self.tamaño
-    def get_comportamiento(self):
-        return self.comportamiento
-    def set_x(self, x):
-        self.x = x
-    def set_y(self, y):
-        self.y = y
-    def set_tamaño(self, tamaño):
-        self.tamaño = tamaño
-    def set_comportamiento(self, comportamiento):
-        self.comportamiento = comportamiento
+class MonedasFactory(Factory):
+    def crear_obstaculo_aereo(self, alto, strategy) -> ObstaculoAereo:
+        return Monedas(alto, strategy)
+    
+    def crear_obstaculo_terrestre(self, alto, strategy) -> ObstaculoAereo:
+        return Monedas(alto, strategy)

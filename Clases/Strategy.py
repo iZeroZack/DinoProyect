@@ -8,3 +8,7 @@ class Strategy(ABC):
     @abstractmethod
     def accionAerea(self) -> int:
         pass
+
+    @abstractmethod
+    def accionMoneda(self) -> int:
+        pass

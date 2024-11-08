@@ -9,6 +9,7 @@ import Dragon
 import Terreno
 import Factory as Factory
 import random as Random
+import Monedas
 
 # Inicializa Pygame
 pg.init()
@@ -102,9 +103,11 @@ obstaculo = obsTerrestre.clonar()
 
 skinObstaculo = pg.transform.scale(skinObstaculo, (obstaculo.ancho+50, obstaculo.alto+50))
 
+monedaJuego = Monedas.MonedasFactory().crear_obstaculo_aereo(ALTO - terreno.getAlto(), estrategia)
 activo = True
 
 diferenciaObstaculos = 1500
+diferenciaMonedas = 2500
 
 def movimientoObstaculos() -> Factory:
     eleccion = Random.randint(0, 2)
@@ -117,7 +120,6 @@ def movimientoObstaculos() -> Factory:
     else:
         obs = obsTerrestre.clonar()
         obs.diseño = "red"
-    
     return obs
 
 cooldown_salto = 5000
@@ -174,8 +176,10 @@ while jugando:
         dragon.puntaje = 0
         jugar = True
         obstaculo = obsTerrestre.clonar()
+        moneda = monedaJuego.clonar()
         activo = True
         diferenciaObstaculos = 1500
+        diferenciaMonedas = 2500
 
 
     pg.display.update()
@@ -194,13 +198,17 @@ while jugando:
         terreno.dibujar(VENTANA)
         dragon.actualizar()  # Actualiza la animación
         dragon.dibujar(VENTANA)
-
+        moneda.dibujar(VENTANA)
         obstaculo.dibujar(VENTANA)
         VENTANA.blit(skinObstaculo, (obstaculo.x-30, obstaculo.y-40))
 
         if obstaculo.rect.colliderect(dragon.rect):
             dragon.vida -= 1
 
+        if moneda.rect.colliderect(dragon.rect):
+            dragon.puntaje += 50
+            moneda.x = -moneda.ancho
+            diferenciaMonedas = Random.randint(2500, 3000)
 
         diferenciaObstaculos -= 1
         if diferenciaObstaculos <= 0:
@@ -212,8 +220,21 @@ while jugando:
                 obstaculo.comportamiento = StrategyTradicional()
             diferenciaObstaculos = 1500
 
+        diferenciaMonedas -= 1
+        if diferenciaMonedas <= 0:
+            moneda = monedaJuego.clonar()
+            numeroForStrategy = Random.randint(1, 10)
+            if numeroForStrategy%2 == 0:
+                moneda.comportamiento = StrategyDinamico()
+            else:
+                moneda.comportamiento = StrategyTradicional()
+            diferenciaMonedas = Random.randint(2500, 3000)
+
         if (obstaculo.x > -obstaculo.ancho) and dragon.vivo:
             obstaculo.x -= 0.7
+        
+        if (moneda.x > -moneda.ancho) and dragon.vivo and diferenciaMonedas < 1500:
+            moneda.x -= 0.7
 
         if diferenciaObstaculos % 20 == 0  and dragon.vivo:
             dragon.puntaje += 1
