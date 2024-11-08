@@ -30,6 +30,7 @@ class Dragon:
         self.animaciones = None
         self.tiempo_llegada_suelo = 0
         self.vivo = True
+        self.balas = 3
 
 #Modificar para salto tamvbien
     def actualizar(self):
@@ -100,11 +101,13 @@ class Dragon:
             else:
                 self.en_el_suelo = True
             
-
-
-
-    def disparar(self):
-        return void()
+    def disparar(self, teclas):
+        if self.vivo:
+            if teclas[pg.K_c] and self.balas > 0:
+                self.balas -= 1
+                return True
+            else:
+                return False
     
     def agacharse(self, teclas):
         if self.vivo:
@@ -112,6 +115,7 @@ class Dragon:
                 self.estado = "agachado"
             else:
                 self.estado = "movimiento"
+    
     def muerte(self):
         self.estado = "muerto"
         self.vivo = False

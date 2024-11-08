@@ -13,6 +13,7 @@ class ObstaculoBosqueTerrestre(ObstaculoTerrestre):
         self.y = ALTO - self.alto
         self.diseño = "green"
         self.comportamiento = strategy
+        self.rompible = False
         self.listo = False
         self.rect = pygame.Rect(self.x, self.y, self.ancho, self.alto)
         

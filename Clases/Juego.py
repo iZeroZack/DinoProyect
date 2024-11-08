@@ -10,6 +10,7 @@ import Terreno
 import Factory as Factory
 import random as Random
 import Monedas
+import Bala
 
 # Inicializa Pygame
 pg.init()
@@ -106,6 +107,9 @@ skinObstaculo = pg.transform.scale(skinObstaculo, (obstaculo.ancho+50, obstaculo
 monedaJuego = Monedas.MonedasFactory().crear_obstaculo_aereo(ALTO - terreno.getAlto(), estrategia)
 activo = True
 
+balasDragon = Bala.BalaFactory().crear_obstaculo_terrestre(dragon)
+disparo = False
+
 diferenciaObstaculos = 1500
 diferenciaMonedas = 2500
 
@@ -120,6 +124,8 @@ def movimientoObstaculos() -> Factory:
     else:
         obs = obsTerrestre.clonar()
         obs.diseño = "red"
+        obs.rompible = True
+        obs.comportamiento = StrategyTradicional()
     return obs
 
 cooldown_salto = 5000
@@ -171,16 +177,18 @@ while jugando:
         dragon.animacion_egg = n
 
 
-    if teclas[pg.K_SPACE]:
+    if teclas[pg.K_SPACE] or teclas[pg.K_UP]:
         dragon.vida = 1
         dragon.puntaje = 0
         jugar = True
         obstaculo = obsTerrestre.clonar()
         moneda = monedaJuego.clonar()
         activo = True
+        disparo = False
+        bala = balasDragon.clonar()
+        dragon.balas = 3
         diferenciaObstaculos = 1500
         diferenciaMonedas = 2500
-
 
     pg.display.update()
 
@@ -202,6 +210,16 @@ while jugando:
         obstaculo.dibujar(VENTANA)
         VENTANA.blit(skinObstaculo, (obstaculo.x-30, obstaculo.y-40))
 
+        if dragon.disparar(teclas):
+            bala = balasDragon.clonar()
+            disparo = True
+
+        if bala.rect.colliderect(obstaculo.rect) and disparo and obstaculo.rompible:
+            obstaculo.x = ANCHO + obstaculo.ancho
+            bala.x = ANCHO + bala.ancho
+            diferenciaObstaculos = 0
+            disparo = False
+
         if obstaculo.rect.colliderect(dragon.rect):
             dragon.vida -= 1
 
@@ -214,7 +232,7 @@ while jugando:
         if diferenciaObstaculos <= 0:
             obstaculo = movimientoObstaculos()
             numeroForStrategy = Random.randint(1, 10)
-            if numeroForStrategy%2 == 0:
+            if numeroForStrategy%2 == 0 and obstaculo.diseño != "red":
                 obstaculo.comportamiento = StrategyDinamico()
             else:
                 obstaculo.comportamiento = StrategyTradicional()
@@ -235,6 +253,15 @@ while jugando:
         
         if (moneda.x > -moneda.ancho) and dragon.vivo and diferenciaMonedas < 1500:
             moneda.x -= 0.7
+
+        if disparo:
+            bala.x += 1.5
+            bala.dibujar(VENTANA)
+        
+        if bala.x > ANCHO:
+            disparo = False
+            dragon.balas += 1
+            bala = balasDragon.clonar()
 
         if diferenciaObstaculos % 20 == 0  and dragon.vivo:
             dragon.puntaje += 1
