@@ -111,6 +111,8 @@ balasDragon = Bala.BalaFactory().crear_obstaculo_terrestre(dragon)
 disparo = False
 
 diferenciaObstaculos = 1500
+incrementarDifObs = 0
+velObstaculos = 0.9
 diferenciaMonedas = 2500
 
 def movimientoObstaculos() -> Factory:
@@ -130,6 +132,7 @@ def movimientoObstaculos() -> Factory:
 
 cooldown_salto = 5000
 posicion = 0
+cambios = False
 
 while jugando:
     #########MEJORRA COOLDAWN AAAAAAAAAAAAAAAAA
@@ -188,6 +191,7 @@ while jugando:
         bala = balasDragon.clonar()
         dragon.balas = 3
         diferenciaObstaculos = 1500
+        velObstaculos = 0.7
         diferenciaMonedas = 2500
 
     pg.display.update()
@@ -229,14 +233,24 @@ while jugando:
             diferenciaMonedas = Random.randint(2500, 3000)
 
         diferenciaObstaculos -= 1
-        if diferenciaObstaculos <= 0:
+        if diferenciaObstaculos <= 0:    
             obstaculo = movimientoObstaculos()
             numeroForStrategy = Random.randint(1, 10)
-            if numeroForStrategy%2 == 0 and obstaculo.diseño != "red":
+            if numeroForStrategy % 2 == 0 and obstaculo.diseño != "red":
                 obstaculo.comportamiento = StrategyDinamico()
             else:
                 obstaculo.comportamiento = StrategyTradicional()
             diferenciaObstaculos = 1500
+            if cambios:
+                velObstaculos += 0.1
+                print(velObstaculos)
+                incrementarDifObs += 50
+                print(diferenciaObstaculos - incrementarDifObs)
+                cambios = False
+            diferenciaObstaculos -= incrementarDifObs    
+        
+        if dragon.puntaje % 500 == 0 and dragon.puntaje != 0 and cambios == False:
+            cambios = True
 
         diferenciaMonedas -= 1
         if diferenciaMonedas <= 0:
@@ -249,7 +263,7 @@ while jugando:
             diferenciaMonedas = Random.randint(2500, 3000)
 
         if (obstaculo.x > -obstaculo.ancho) and dragon.vivo:
-            obstaculo.x -= 0.7
+            obstaculo.x -= velObstaculos
         
         if (moneda.x > -moneda.ancho) and dragon.vivo and diferenciaMonedas < 1500:
             moneda.x -= 0.7

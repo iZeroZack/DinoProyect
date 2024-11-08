@@ -37,6 +37,7 @@ class ObstaculoBosqueAereo(ObstaculoAereo):
         self.diseño = "green"
         self.comportamiento = strategy
         self.listo = False
+        self.rompible = False
         self.rect = pygame.Rect(self.x, self.y, self.ancho, self.alto)
    
     def dibujar(self, ventana):
