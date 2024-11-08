@@ -20,6 +20,8 @@ VENTANA = pg.display.set_mode((ANCHO, ALTO))
 font = pg.font.SysFont("Arial", 30)
 colorLetraPrimario = "white"
 colorLetraSecundario = "black"
+btnCambiarTematica = pg.Rect((ANCHO/2)-120, ALTO-80, 240, 50)
+txtCambiarTematica = font.render("Cambiar Tematica", True, colorLetraPrimario)
 
 def animacion(n, imagen, escala):
     frame_width = 24
@@ -34,14 +36,14 @@ def animacion(n, imagen, escala):
         sprite.append(enlarged_frame)
     return sprite
 
-animacion_move = animacion(6, "Imagenes/move.png", 5)
-animacion_jump = animacion(4, "Imagenes/jump.png", 5)
-animacion_dash = animacion(6, "Imagenes/dash.png", 5)
-animacion_dead = animacion(5, "Imagenes/dead.png", 5)
+animacion_move = animacion(6, "Clases/Imagenes/move.png", 5)
+animacion_jump = animacion(4, "Clases/Imagenes/jump.png", 5)
+animacion_dash = animacion(6, "Clases/Imagenes/dash.png", 5)
+animacion_dead = animacion(5, "Clases/Imagenes/dead.png", 5)
 animacion_inicial =  []
-animacion_inicial.append(animacion(4, "Imagenes/move_egg.png", 5))
-animacion_inicial.append(animacion(4, "Imagenes/crack.png", 5))
-animacion_inicial.append(animacion(4, "Imagenes/hatch.png", 5))
+animacion_inicial.append(animacion(4, "Clases/Imagenes/move_egg.png", 5))
+animacion_inicial.append(animacion(4, "Clases/Imagenes/crack.png", 5))
+animacion_inicial.append(animacion(4, "Clases/Imagenes/hatch.png", 5))
 
 
 def mostrarPuntaje(ventana, puntaje, puntajeMax):
@@ -50,36 +52,46 @@ def mostrarPuntaje(ventana, puntaje, puntajeMax):
     ventana.blit(txtPuntaje, (ANCHO/2 - 70, ALTO/2 - 15))
     ventana.blit(txtPuntajeMax, (ANCHO/2 - 100, ALTO/2 + 15))
 
+def modificarTematica(bton) -> str:
+    temas = ["Bosque", "Desierto", "Tundra"]
+    if bton.collidepoint(pg.mouse.get_pos()):
+        if pg.mouse.get_pressed()[0]:
+            eleccion = Random.choice(temas)
+    return eleccion
+
 ########
 GRAVEDAD = 0.1
 registro = Registro.Registro()
 jugando = True
 jugar = False
-tematica = "Bosque"
 dragon = Dragon.Dragon(100, ALTO-175, animacion_move, animacion_jump, animacion_dash, animacion_dead, animacion_inicial[0])
 estrategia = StrategyTradicional()
 terreno = Terreno.Terreno(ANCHO, ALTO)
 
-if tematica == "Bosque":
-    fabrica = ObstaculoFactoryBosque()
-    fondo = pg.image.load("Imagenes/bosque.jpg").convert_alpha()
-    skinObstaculo = pg.image.load("Imagenes/bosque obs_terrestre.png").convert_alpha()
-elif tematica == "Desierto":
-    fabrica = ObstaculoFactoryDesierto()
-    fondo = pg.image.load("Imagenes/desierto.jpg").convert_alpha()
-    skinObstaculo = pg.image.load("Clases/Imagenes/Cactus.png").convert_alpha()
-elif tematica == "Tundra":
-    fabrica = ObstaculoFactoryTundra()
-    fondo = pg.image.load("Imagenes/tundra.jpg").convert_alpha()
-    skinObstaculo = pg.image.load("Imagenes/Tundra obs_terrestre.png").convert_alpha()
-    terreno.diseño = "gray"
-    colorLetra = "white"
+def definirFabrica(tematica)->Factory:
+    if tematica == "Bosque":
+        fabrica = ObstaculoFactoryBosque()
+        fondo = pg.image.load("Clases/Imagenes/bosque.jpg").convert_alpha()
+        skinObstaculo = pg.image.load("Clases/Imagenes/bosque obs_terrestre.png").convert_alpha()
+        terreno.diseño = "brown"
+    elif tematica == "Desierto":
+        fabrica = ObstaculoFactoryDesierto()
+        fondo = pg.image.load("Clases/Imagenes/desierto.jpg").convert_alpha()
+        skinObstaculo = pg.image.load("Clases/Imagenes/Cactus.png").convert_alpha()
+        terreno.diseño = "orange"
+    elif tematica == "Tundra":
+        fabrica = ObstaculoFactoryTundra()
+        fondo = pg.image.load("Clases/Imagenes/tundra.jpg").convert_alpha()
+        skinObstaculo = pg.image.load("Clases/Imagenes/Tundra obs_terrestre.png").convert_alpha()
+        terreno.diseño = "gray"
+        colorLetra = "white"
+    else:
+        fabrica = ObstaculoFactoryBosque()
+        fondo = pg.image.load("Clases/Imagenes/bosque.jpg").convert_alpha()
+        skinObstaculo = pg.image.load("Clases/Imagenes/bosque obs_terrestre.png").convert_alpha()
+    return fabrica, fondo, skinObstaculo, terreno
 
-else:
-    fabrica = ObstaculoFactoryBosque()
-    fondo = pg.image.load("Imagenes/bosque.jpg").convert_alpha()
-    skinObstaculo = pg.image.load("Imagenes/bosque obs_terrestre.png").convert_alpha()
-
+fabrica, fondo, skinObstaculo, terreno = definirFabrica("Desierto")
 obsTerrestre = fabrica.crear_obstaculo_terrestre(ALTO - terreno.getAlto(), estrategia)
 
 obsAereo = fabrica.crear_obstaculo_aereo(ALTO - terreno.getAlto(), estrategia)
@@ -120,6 +132,8 @@ while jugando:
     dragon.y = ALTO-175
     eventos = pg.event.get()
     teclas = pg.key.get_pressed()
+    mouse = pg.mouse.get_pos()
+    click = pg.mouse.get_pressed()
 
     for evento in eventos:
         if evento.type == pg.QUIT:
@@ -131,6 +145,15 @@ while jugando:
     txtPuntajeMaximo = font.render(f'Puntaje Maximo [{registro.getPuntajeMax()}]', True, colorLetraSecundario)
     VENTANA.blit(txtPuntajeMaximo, (ANCHO/2 - 100, ALTO/2 + 15))
     VENTANA.blit(txt, (ANCHO/2 - 150, ALTO/2 - 15))
+    pg.draw.rect(VENTANA, "black", btnCambiarTematica)
+    VENTANA.blit(txtCambiarTematica, (ANCHO/2-100, ALTO-75))
+    if btnCambiarTematica.collidepoint(mouse):
+        if click[0]:
+            tematica = modificarTematica(btnCambiarTematica)
+            fabrica, fondo, skinObstaculo, terreno = definirFabrica(tematica)
+            skinObstaculo = pg.transform.scale(skinObstaculo, (obstaculo.ancho+50, obstaculo.alto+50))
+            if tematica == "Bosque":
+                skinObstaculo = pg.transform.scale(skinObstaculo, (obstaculo.ancho+60, obstaculo.alto+60))
 
     dragon.actualizar()
     dragon.dibujar(VENTANA)
