@@ -113,7 +113,7 @@ disparo = False
 diferenciaObstaculos = 1500
 incrementarDifObs = 0
 velObstaculos = 0.9
-diferenciaMonedas = 2500
+diferenciaMonedas =2500
 carpeta_desierto = "Imagenes/Animacion_desierto"
 carpeta_bosque = "Imagenes/Animacion_bosque"
 carpeta_tundra = "Imagenes/Animacion_tundra"
@@ -274,7 +274,7 @@ while jugando:
             disparo = False
 
         if obstaculo.rect.colliderect(dragon.rect):
-            dragon.vida -= 1
+            dragon.vida = 1
 
         if moneda.rect.colliderect(dragon.rect):
             dragon.puntaje += 50
@@ -298,15 +298,15 @@ while jugando:
         if dragon.puntaje % 500 == 0 and dragon.puntaje != 0 and cambios == False:
             cambios = True
 
-            diferenciaMonedas -= 1
-            if diferenciaMonedas <= 0:
-                moneda = monedaJuego.clonar()
-                numeroForStrategy = Random.randint(1, 10)
-                if numeroForStrategy%2 == 0:
-                    moneda.comportamiento = StrategyDinamico()
-                else:
-                    moneda.comportamiento = StrategyTradicional()
-                diferenciaMonedas = Random.randint(2500, 3000)
+        diferenciaMonedas -= 1
+        if diferenciaMonedas <= 0:
+            moneda = monedaJuego.clonar()
+            numeroForStrategy = Random.randint(1, 10)
+            if numeroForStrategy%2 == 0:
+                moneda.comportamiento = StrategyDinamico()
+            else:
+                moneda.comportamiento = StrategyTradicional()
+            diferenciaMonedas = 2500
 
         if (obstaculo.x > -obstaculo.ancho) and dragon.vivo:
             obstaculo.x -= velObstaculos
@@ -337,7 +337,6 @@ while jugando:
             #PRESS ENTER PARA REINICIAR
             #print(dragon.estado_muerte_fin)
             if dragon.estado_muerte_fin:
-                print("s")
                 posicion = 0
                 jugar = False
                 estado_muerte_fin = False

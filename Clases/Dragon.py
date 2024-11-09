@@ -61,8 +61,8 @@ class Dragon:
                     self.frame_actual = len(self.animaciones) - 1
                 elif self.estado == "muerto":
                     self.frame_actual = len(self.animaciones) - 1
+
                     self.estado_muerte_fin = True
-                    pg.stop
                 else:
                     self.frame_actual = 0  # Reiniciar la animación si se completa
             self.diseño = self.animaciones[self.frame_actual]
