@@ -290,16 +290,6 @@ while jugando:
                 else:
                     obstaculo.comportamiento = StrategyTradicional()
                 diferenciaObstaculos = 1500
-
-        diferenciaObstaculos -= 1
-        if diferenciaObstaculos <= 0:
-            obstaculo = movimientoObstaculos(tematica)
-            numeroForStrategy = Random.randint(1, 10)
-            if numeroForStrategy % 2 == 0 and obstaculo.diseño != "red":
-                obstaculo.comportamiento = StrategyDinamico()
-            else:
-                obstaculo.comportamiento = StrategyTradicional()
-            diferenciaObstaculos = 1500
             if cambios:
                 velObstaculos += 0.1
                 print(velObstaculos)
