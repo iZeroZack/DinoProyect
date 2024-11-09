@@ -292,13 +292,9 @@ while jugando:
                 diferenciaObstaculos = 1500
                 ##AQUI CON EL PRIMER CAMBIOS ENTRA MAS DE 1
             if cambios:
-                velObstaculos += 0.1
-                print(velObstaculos)
-                incrementarDifObs += 50
-                print(diferenciaObstaculos - incrementarDifObs)
+                velObstaculos += 0.01
                 cambios = False
-            diferenciaObstaculos -= incrementarDifObs
-        ##PRODUCTO ERROR JUNTO CON LO DE ARRIBA
+
         if dragon.puntaje % 500 == 0 and dragon.puntaje != 0 and cambios == False:
             cambios = True
 
