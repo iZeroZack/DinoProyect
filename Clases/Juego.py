@@ -10,6 +10,7 @@ import Terreno
 import Factory as Factory
 import random as Random
 import Monedas
+import os
 import Bala
 
 # Inicializa Pygame
@@ -38,14 +39,14 @@ def animacion(n, imagen, escala):
         sprite.append(enlarged_frame)
     return sprite
 
-animacion_move = animacion(6, "Clases/Imagenes/move.png", 5)
-animacion_jump = animacion(4, "Clases/Imagenes/jump.png", 5)
-animacion_dash = animacion(6, "Clases/Imagenes/dash.png", 5)
-animacion_dead = animacion(5, "Clases/Imagenes/dead.png", 5)
+animacion_move = animacion(6, "Imagenes/move.png", 5)
+animacion_jump = animacion(4, "Imagenes/jump.png", 5)
+animacion_dash = animacion(6, "Imagenes/dash.png", 5)
+animacion_dead = animacion(5, "Imagenes/dead.png", 5)
 animacion_inicial =  []
-animacion_inicial.append(animacion(4, "Clases/Imagenes/move_egg.png", 5))
-animacion_inicial.append(animacion(4, "Clases/Imagenes/crack.png", 5))
-animacion_inicial.append(animacion(4, "Clases/Imagenes/hatch.png", 5))
+animacion_inicial.append(animacion(4, "Imagenes/move_egg.png", 5))
+animacion_inicial.append(animacion(4, "Imagenes/crack.png", 5))
+animacion_inicial.append(animacion(4, "Imagenes/hatch.png", 5))
 
 
 def mostrarPuntaje(ventana, puntaje, puntajeMax):
@@ -73,36 +74,35 @@ terreno = Terreno.Terreno(ANCHO, ALTO)
 def definirFabrica(tematica)->Factory:
     if tematica == "Bosque":
         fabrica = ObstaculoFactoryBosque()
-        fondo = pg.image.load("Clases/Imagenes/bosque.jpg").convert_alpha()
-        skinObstaculo = pg.image.load("Clases/Imagenes/bosque obs_terrestre.png").convert_alpha()
+        fondo = pg.image.load("Imagenes/bosque.jpg").convert_alpha()
+        #skinObstaculo = pg.image.load("Imagenes/Bosque obs_terrestre.png").convert_alpha()
         terreno.diseño = "brown"
     elif tematica == "Desierto":
         fabrica = ObstaculoFactoryDesierto()
-        fondo = pg.image.load("Clases/Imagenes/desierto.jpg").convert_alpha()
-        skinObstaculo = pg.image.load("Clases/Imagenes/Cactus.png").convert_alpha()
+        fondo = pg.image.load("Imagenes/desierto.jpg").convert_alpha()
+        #skinObstaculo = pg.image.load("Imagenes/Cactus.png").convert_alpha()
         terreno.diseño = "orange"
     elif tematica == "Tundra":
         fabrica = ObstaculoFactoryTundra()
-        fondo = pg.image.load("Clases/Imagenes/tundra.jpg").convert_alpha()
-        skinObstaculo = pg.image.load("Clases/Imagenes/Tundra obs_terrestre.png").convert_alpha()
+        fondo = pg.image.load("Imagenes/tundra.jpg").convert_alpha()
+        #skinObstaculo = pg.image.load("Imagenes/Tundra obs_terrestre.png").convert_alpha()
         terreno.diseño = "gray"
         colorLetra = "white"
     else:
         fabrica = ObstaculoFactoryBosque()
         fondo = pg.image.load("Clases/Imagenes/bosque.jpg").convert_alpha()
-        skinObstaculo = pg.image.load("Clases/Imagenes/bosque obs_terrestre.png").convert_alpha()
-    return fabrica, fondo, skinObstaculo, terreno
+        #skinObstaculo = pg.image.load("Clases/Imagenes/Bosque obs_terrestre.png").convert_alpha()
+    return fabrica, fondo, terreno
 
-fabrica, fondo, skinObstaculo, terreno = definirFabrica("Desierto")
+fabrica, fondo, terreno = definirFabrica("Desierto")
 obsTerrestre = fabrica.crear_obstaculo_terrestre(ALTO - terreno.getAlto(), estrategia)
 
 obsAereo = fabrica.crear_obstaculo_aereo(ALTO - terreno.getAlto(), estrategia)
 
 obsRompible = obsTerrestre.clonar()
 
-obstaculo = obsTerrestre.clonar()
+obstaculo = None
 
-skinObstaculo = pg.transform.scale(skinObstaculo, (obstaculo.ancho+50, obstaculo.alto+50))
 
 monedaJuego = Monedas.MonedasFactory().crear_obstaculo_aereo(ALTO - terreno.getAlto(), estrategia)
 activo = True
@@ -114,8 +114,29 @@ diferenciaObstaculos = 1500
 incrementarDifObs = 0
 velObstaculos = 0.9
 diferenciaMonedas = 2500
+carpeta_desierto = "Imagenes/Animacion_desierto"
+carpeta_bosque = "Imagenes/Animacion_bosque"
+carpeta_tundra = "Imagenes/Animacion_tundra"
+def extraer_imagenes(carpeta):
+    arreglo = []
+    for nombre_archivo in os.listdir(carpeta):
+        imagen = pg.image.load(carpeta+"/"+nombre_archivo).convert_alpha()
+        imagen = pg.transform.scale(imagen, (24 * 3, 24 * 3))
+        arreglo.append(imagen)
+    return arreglo
 
-def movimientoObstaculos() -> Factory:
+
+##ANIMACIONES AEREAS
+animacion_aereo_desierto = extraer_imagenes(carpeta_desierto)
+animacion_aereo_bosque = extraer_imagenes(carpeta_bosque)
+animacion_aereo_tundra = extraer_imagenes(carpeta_tundra)
+
+#ANIMACIONES TERRESTRES
+arbol_bosque = pg.image.load("Imagenes/Bosque obs_terrestre.png").convert_alpha()
+arbol_tundra = pg.image.load("Imagenes/Tundra obs_terrestre.png").convert_alpha()
+arbol_desierto = pg.image.load("Imagenes/Desierto obs_terrestre.png").convert_alpha()
+
+def movimientoObstaculos(tematica) -> Factory:
     eleccion = Random.randint(0, 2)
     if eleccion == 0:
         obs = obsTerrestre.clonar()
@@ -128,12 +149,40 @@ def movimientoObstaculos() -> Factory:
         obs.diseño = "red"
         obs.rompible = True
         obs.comportamiento = StrategyTradicional()
+
+    if tematica == "Tundra":
+        if eleccion == 1:
+            obs.animaciones = animacion_aereo_tundra
+        else:
+            obs.ancho_imagen = 16
+            obs.alto_imagen = 24
+            obs.eje_x_variacion_imagen = -5
+            obs.eje_y_variacion_imagen = 0
+            obs.imagen = arbol_tundra
+    elif tematica == "Bosque":
+        if eleccion == 1:
+            obs.animaciones = animacion_aereo_bosque
+        else:
+            obs.ancho_imagen = 24
+            obs.alto_imagen = 24
+            obs.eje_x_variacion_imagen = -15
+            obs.eje_y_variacion_imagen = 0
+            obs.imagen = arbol_bosque
+    else:
+        if eleccion == 1:
+            obs.animaciones = animacion_aereo_desierto
+        else:
+            obs.ancho_imagen = 15
+            obs.alto_imagen = 24
+            obs.eje_x_variacion_imagen = 0
+            obs.eje_y_variacion_imagen = 0
+            obs.imagen = arbol_desierto
     return obs
 
 cooldown_salto = 5000
 posicion = 0
 cambios = False
-
+tematica = ""
 while jugando:
     #########MEJORRA COOLDAWN AAAAAAAAAAAAAAAAA
     inicio_cooldown = pg.time.get_ticks()
@@ -161,10 +210,9 @@ while jugando:
     if btnCambiarTematica.collidepoint(mouse):
         if click[0]:
             tematica = modificarTematica(btnCambiarTematica)
-            fabrica, fondo, skinObstaculo, terreno = definirFabrica(tematica)
-            skinObstaculo = pg.transform.scale(skinObstaculo, (obstaculo.ancho+50, obstaculo.alto+50))
-            if tematica == "Bosque":
-                skinObstaculo = pg.transform.scale(skinObstaculo, (obstaculo.ancho+60, obstaculo.alto+60))
+            fabrica, fondo, terreno = definirFabrica(tematica)
+            ##############################################################
+            ##skinObstaculo = pg.transform.scale(skinObstaculo, (obstaculo.ancho+50, obstaculo.alto+50))
 
     dragon.actualizar()
     dragon.dibujar(VENTANA)
@@ -184,7 +232,7 @@ while jugando:
         dragon.vida = 1
         dragon.puntaje = 0
         jugar = True
-        obstaculo = obsTerrestre.clonar()
+        obstaculo = movimientoObstaculos(tematica)
         moneda = monedaJuego.clonar()
         activo = True
         disparo = False
@@ -198,6 +246,7 @@ while jugando:
 
     while jugar:
         eventos = pg.event.get()
+        teclas = None
         teclas = pg.key.get_pressed()
         for evento in eventos:
             if evento.type == pg.QUIT:
@@ -211,8 +260,8 @@ while jugando:
         dragon.actualizar()  # Actualiza la animación
         dragon.dibujar(VENTANA)
         moneda.dibujar(VENTANA)
+        obstaculo.actualizar()
         obstaculo.dibujar(VENTANA)
-        VENTANA.blit(skinObstaculo, (obstaculo.x-30, obstaculo.y-40))
 
         if dragon.disparar(teclas):
             bala = balasDragon.clonar()
@@ -231,10 +280,20 @@ while jugando:
             dragon.puntaje += 50
             moneda.x = -moneda.ancho
             diferenciaMonedas = Random.randint(2500, 3000)
+        if dragon.vivo:
+            diferenciaObstaculos -= 1
+            if diferenciaObstaculos <= 0:
+                obstaculo = movimientoObstaculos(tematica)
+                numeroForStrategy = Random.randint(1, 10)
+                if numeroForStrategy%2 == 0:
+                    obstaculo.comportamiento = StrategyDinamico()
+                else:
+                    obstaculo.comportamiento = StrategyTradicional()
+                diferenciaObstaculos = 1500
 
         diferenciaObstaculos -= 1
-        if diferenciaObstaculos <= 0:    
-            obstaculo = movimientoObstaculos()
+        if diferenciaObstaculos <= 0:
+            obstaculo = movimientoObstaculos(tematica)
             numeroForStrategy = Random.randint(1, 10)
             if numeroForStrategy % 2 == 0 and obstaculo.diseño != "red":
                 obstaculo.comportamiento = StrategyDinamico()
@@ -247,20 +306,20 @@ while jugando:
                 incrementarDifObs += 50
                 print(diferenciaObstaculos - incrementarDifObs)
                 cambios = False
-            diferenciaObstaculos -= incrementarDifObs    
-        
+            diferenciaObstaculos -= incrementarDifObs
+
         if dragon.puntaje % 500 == 0 and dragon.puntaje != 0 and cambios == False:
             cambios = True
 
-        diferenciaMonedas -= 1
-        if diferenciaMonedas <= 0:
-            moneda = monedaJuego.clonar()
-            numeroForStrategy = Random.randint(1, 10)
-            if numeroForStrategy%2 == 0:
-                moneda.comportamiento = StrategyDinamico()
-            else:
-                moneda.comportamiento = StrategyTradicional()
-            diferenciaMonedas = Random.randint(2500, 3000)
+            diferenciaMonedas -= 1
+            if diferenciaMonedas <= 0:
+                moneda = monedaJuego.clonar()
+                numeroForStrategy = Random.randint(1, 10)
+                if numeroForStrategy%2 == 0:
+                    moneda.comportamiento = StrategyDinamico()
+                else:
+                    moneda.comportamiento = StrategyTradicional()
+                diferenciaMonedas = Random.randint(2500, 3000)
 
         if (obstaculo.x > -obstaculo.ancho) and dragon.vivo:
             obstaculo.x -= velObstaculos
@@ -271,7 +330,7 @@ while jugando:
         if disparo:
             bala.x += 1.5
             bala.dibujar(VENTANA)
-        
+
         if bala.x > ANCHO:
             disparo = False
             dragon.balas += 1
@@ -282,20 +341,20 @@ while jugando:
 
         if dragon.vida == 0 or not dragon.vivo:
             dragon.muerte()
-            print("Perdiste")
+            #print("Perdiste")
             registro.setPuntajeActual(dragon.puntaje)
             if dragon.puntaje > registro.getPuntajeMax():
                 registro.setPuntajeMax(dragon.puntaje)
             mostrarPuntaje(VENTANA, registro.getPuntajeActual(), registro.getPuntajeMax())
             pg.display.flip()
-            #########MEJORRA COOLDAWN AAAAAAAAAAAAAAAAA
-            tiempo_actual = pg.time.get_ticks()
-            tiempo_transcurrido = tiempo_actual - inicio_cooldown
-            print(tiempo_transcurrido,"-",cooldown_salto-2500)
-            if tiempo_transcurrido > cooldown_salto-2500:
-                print("entro")
+            #PRESS ENTER PARA REINICIAR
+            #print(dragon.estado_muerte_fin)
+            if dragon.estado_muerte_fin:
+                print("s")
                 posicion = 0
                 jugar = False
+                estado_muerte_fin = False
+
 
         pg.display.update()
 

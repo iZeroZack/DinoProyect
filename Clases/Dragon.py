@@ -30,6 +30,7 @@ class Dragon:
         self.animaciones = None
         self.tiempo_llegada_suelo = 0
         self.vivo = True
+        self.estado_muerte_fin = False
         self.balas = 3
 
 #Modificar para salto tamvbien
@@ -58,6 +59,10 @@ class Dragon:
             if self.frame_actual >= len(self.animaciones):
                 if self.estado == "salto":
                     self.frame_actual = len(self.animaciones) - 1
+                elif self.estado == "muerto":
+                    self.frame_actual = len(self.animaciones) - 1
+                    self.estado_muerte_fin = True
+                    pg.stop
                 else:
                     self.frame_actual = 0  # Reiniciar la animación si se completa
             self.diseño = self.animaciones[self.frame_actual]
@@ -115,7 +120,7 @@ class Dragon:
                 self.estado = "agachado"
             else:
                 self.estado = "movimiento"
-    
+
     def muerte(self):
         self.estado = "muerto"
         self.vivo = False
