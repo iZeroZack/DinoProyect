@@ -105,6 +105,7 @@ obstaculo = None
 
 
 monedaJuego = Monedas.MonedasFactory().crear_obstaculo_aereo(ALTO - terreno.getAlto(), estrategia)
+
 activo = True
 
 balasDragon = Bala.BalaFactory().crear_obstaculo_terrestre(dragon)
@@ -234,6 +235,8 @@ while jugando:
         jugar = True
         obstaculo = movimientoObstaculos(tematica)
         moneda = monedaJuego.clonar()
+        imagen_moneda = animacion(7, "Imagenes/Moneda.png", 5)
+        moneda.imagen = imagen_moneda
         activo = True
         disparo = False
         bala = balasDragon.clonar()
