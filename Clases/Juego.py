@@ -39,14 +39,14 @@ def animacion(n, imagen, escala):
         sprite.append(enlarged_frame)
     return sprite
 
-animacion_move = animacion(6, "Imagenes/move.png", 5)
-animacion_jump = animacion(4, "Imagenes/jump.png", 5)
-animacion_dash = animacion(6, "Imagenes/dash.png", 5)
-animacion_dead = animacion(5, "Imagenes/dead.png", 5)
+animacion_move = animacion(6, "Clases/Imagenes/move.png", 5)
+animacion_jump = animacion(4, "Clases/Imagenes/jump.png", 5)
+animacion_dash = animacion(6, "Clases/Imagenes/dash.png", 5)
+animacion_dead = animacion(5, "Clases/Imagenes/dead.png", 5)
 animacion_inicial =  []
-animacion_inicial.append(animacion(4, "Imagenes/move_egg.png", 5))
-animacion_inicial.append(animacion(4, "Imagenes/crack.png", 5))
-animacion_inicial.append(animacion(4, "Imagenes/hatch.png", 5))
+animacion_inicial.append(animacion(4, "Clases/Imagenes/move_egg.png", 5))
+animacion_inicial.append(animacion(4, "Clases/Imagenes/crack.png", 5))
+animacion_inicial.append(animacion(4, "Clases/Imagenes/hatch.png", 5))
 
 
 def mostrarPuntaje(ventana, puntaje, puntajeMax):
@@ -74,17 +74,17 @@ terreno = Terreno.Terreno(ANCHO, ALTO)
 def definirFabrica(tematica)->Factory:
     if tematica == "Bosque":
         fabrica = ObstaculoFactoryBosque()
-        fondo = pg.image.load("Imagenes/bosque.jpg").convert_alpha()
+        fondo = pg.image.load("Clases/Imagenes/bosque.jpg").convert_alpha()
         #skinObstaculo = pg.image.load("Imagenes/Bosque obs_terrestre.png").convert_alpha()
         terreno.diseño = "brown"
     elif tematica == "Desierto":
         fabrica = ObstaculoFactoryDesierto()
-        fondo = pg.image.load("Imagenes/desierto.jpg").convert_alpha()
+        fondo = pg.image.load("Clases/Imagenes/desierto.jpg").convert_alpha()
         #skinObstaculo = pg.image.load("Imagenes/Cactus.png").convert_alpha()
         terreno.diseño = "orange"
     elif tematica == "Tundra":
         fabrica = ObstaculoFactoryTundra()
-        fondo = pg.image.load("Imagenes/tundra.jpg").convert_alpha()
+        fondo = pg.image.load("Clases/Imagenes/tundra.jpg").convert_alpha()
         #skinObstaculo = pg.image.load("Imagenes/Tundra obs_terrestre.png").convert_alpha()
         terreno.diseño = "gray"
         colorLetra = "white"
@@ -115,9 +115,9 @@ diferenciaObstaculos = 1500
 incrementarDifObs = 0
 velObstaculos = 0.9
 diferenciaMonedas =2500
-carpeta_desierto = "Imagenes/Animacion_desierto"
-carpeta_bosque = "Imagenes/Animacion_bosque"
-carpeta_tundra = "Imagenes/Animacion_tundra"
+carpeta_desierto = "Clases/Imagenes/Animacion_desierto"
+carpeta_bosque = "Clases/Imagenes/Animacion_bosque"
+carpeta_tundra = "Clases/Imagenes/Animacion_tundra"
 def extraer_imagenes(carpeta):
     arreglo = []
     for nombre_archivo in os.listdir(carpeta):
@@ -133,9 +133,9 @@ animacion_aereo_bosque = extraer_imagenes(carpeta_bosque)
 animacion_aereo_tundra = extraer_imagenes(carpeta_tundra)
 
 #ANIMACIONES TERRESTRES
-arbol_bosque = pg.image.load("Imagenes/Bosque obs_terrestre.png").convert_alpha()
-arbol_tundra = pg.image.load("Imagenes/Tundra obs_terrestre.png").convert_alpha()
-arbol_desierto = pg.image.load("Imagenes/Desierto obs_terrestre.png").convert_alpha()
+arbol_bosque = pg.image.load("Clases/Imagenes/Bosque obs_terrestre.png").convert_alpha()
+arbol_tundra = pg.image.load("Clases/Imagenes/Tundra obs_terrestre.png").convert_alpha()
+arbol_desierto = pg.image.load("Clases/Imagenes/Desierto obs_terrestre.png").convert_alpha()
 
 def movimientoObstaculos(tematica) -> Factory:
     eleccion = Random.randint(0, 2)
@@ -235,7 +235,7 @@ while jugando:
         jugar = True
         obstaculo = movimientoObstaculos(tematica)
         moneda = monedaJuego.clonar()
-        imagen_moneda = animacion(7, "Imagenes/Moneda.png", 5)
+        imagen_moneda = animacion(7, "Clases/Imagenes/Moneda.png", 5)
         moneda.imagen = imagen_moneda
         activo = True
         disparo = False
