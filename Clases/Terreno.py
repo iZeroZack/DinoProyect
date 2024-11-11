@@ -1,4 +1,3 @@
-##Clases base, pueden cambiar en comparacion al uml debido al lenguaje python
 import pygame
 
 class Terreno:
@@ -19,6 +18,3 @@ class Terreno:
     
     def getAncho(self):
         return self.ancho
-
-    def actualizar(self):
-        return void()

@@ -26,7 +26,6 @@ class ObstaculoTundraTerrestre(ObstaculoTerrestre):
         pass
 
     def dibujar(self, ventana):
-        pygame.draw.rect(ventana, self.diseño, self.rect)
         self.rect = pygame.Rect(self.x, self.y, self.ancho, self.alto)
         self.seleccion = random.randint(0, 1000)
         ventana.blit(self.imagen, (self.rect.x + 50, self.rect.y + 50))
@@ -76,7 +75,6 @@ class ObstaculoTundraAereo(ObstaculoAereo):
         self.rect.y = self.y
 
     def dibujar(self, ventana):
-        pygame.draw.rect(ventana, self.diseño, self.rect)
         self.rect = pygame.Rect(self.x, self.y, self.ancho, self.alto)
         self.seleccion = random.randint(0, 1000)
         if self.seleccion == 29 and not self.listo:

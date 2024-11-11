@@ -39,14 +39,14 @@ def animacion(n, imagen, escala):
         sprite.append(enlarged_frame)
     return sprite
 
-animacion_move = animacion(6, "Imagenes/move.png", 5)
-animacion_jump = animacion(4, "Imagenes/jump.png", 5)
-animacion_dash = animacion(6, "Imagenes/dash.png", 5)
-animacion_dead = animacion(5, "Imagenes/dead.png", 5)
+animacion_move = animacion(6, "Clases/Imagenes/move.png", 5)
+animacion_jump = animacion(4, "Clases/Imagenes/jump.png", 5)
+animacion_dash = animacion(6, "Clases/Imagenes/dash.png", 5)
+animacion_dead = animacion(5, "Clases/Imagenes/dead.png", 5)
 animacion_inicial =  []
-animacion_inicial.append(animacion(4, "Imagenes/move_egg.png", 5))
-animacion_inicial.append(animacion(4, "Imagenes/crack.png", 5))
-animacion_inicial.append(animacion(4, "Imagenes/hatch.png", 5))
+animacion_inicial.append(animacion(4, "Clases/Imagenes/move_egg.png", 5))
+animacion_inicial.append(animacion(4, "Clases/Imagenes/crack.png", 5))
+animacion_inicial.append(animacion(4, "Clases/Imagenes/hatch.png", 5))
 
 
 def mostrarPuntaje(ventana, puntaje, puntajeMax):
@@ -74,40 +74,30 @@ terreno = Terreno.Terreno(ANCHO, ALTO)
 def definirFabrica(tematica)->Factory:
     if tematica == "Bosque":
         fabrica = ObstaculoFactoryBosque()
-        fondo = pg.image.load("Imagenes/bosque.jpg").convert_alpha()
-        #skinObstaculo = pg.image.load("Imagenes/Bosque obs_terrestre.png").convert_alpha()
+        fondo = pg.image.load("Clases/Imagenes/bosque.jpg").convert_alpha()
         terreno.diseño = "brown"
     elif tematica == "Desierto":
         fabrica = ObstaculoFactoryDesierto()
-        fondo = pg.image.load("Imagenes/desierto.jpg").convert_alpha()
-        #skinObstaculo = pg.image.load("Imagenes/Cactus.png").convert_alpha()
+        fondo = pg.image.load("Clases/Imagenes/desierto.jpg").convert_alpha()
         terreno.diseño = "orange"
     elif tematica == "Tundra":
         fabrica = ObstaculoFactoryTundra()
-        fondo = pg.image.load("Imagenes/tundra.jpg").convert_alpha()
-        #skinObstaculo = pg.image.load("Imagenes/Tundra obs_terrestre.png").convert_alpha()
+        fondo = pg.image.load("Clases/Imagenes/tundra.jpg").convert_alpha()
         terreno.diseño = "gray"
         colorLetra = "white"
     else:
         fabrica = ObstaculoFactoryBosque()
-        fondo = pg.image.load("Clases/Imagenes/bosque.jpg").convert_alpha()
-        #skinObstaculo = pg.image.load("Clases/Imagenes/Bosque obs_terrestre.png").convert_alpha()
+        fondo = pg.image.load("Clases/Imagenes/bosque.jpg").convert_alpha()    
     return fabrica, fondo, terreno
 
 fabrica, fondo, terreno = definirFabrica("Desierto")
 obsTerrestre = fabrica.crear_obstaculo_terrestre(ALTO - terreno.getAlto(), estrategia)
-
 obsAereo = fabrica.crear_obstaculo_aereo(ALTO - terreno.getAlto(), estrategia)
-
 obsRompible = obsTerrestre.clonar()
-
 obstaculo = None
-
-
 monedaJuego = Monedas.MonedasFactory().crear_obstaculo_aereo(ALTO - terreno.getAlto(), estrategia)
 
 activo = True
-
 balasDragon = Bala.BalaFactory().crear_obstaculo_terrestre(dragon)
 disparo = False
 
@@ -115,10 +105,11 @@ diferenciaObstaculos = 1500
 incrementarDifObs = 0
 velObstaculos = 0.9
 diferenciaMonedas =1500
-carpeta_desierto = "Imagenes/Animacion_desierto"
-carpeta_bosque = "Imagenes/Animacion_bosque"
-carpeta_tundra = "Imagenes/Animacion_tundra"
-carpeta_moneda = "Imagenes/Animacion_moneda"
+carpeta_desierto = "Clases/Imagenes/Animacion_desierto"
+carpeta_bosque = "Clases/Imagenes/Animacion_bosque"
+carpeta_tundra = "Clases/Imagenes/Animacion_tundra"
+carpeta_moneda = "Clases/Imagenes/Animacion_moneda"
+
 def extraer_imagenes(carpeta):
     arreglo = []
     for nombre_archivo in os.listdir(carpeta):
@@ -127,22 +118,20 @@ def extraer_imagenes(carpeta):
         arreglo.append(imagen)
     return arreglo
 
-
 ##ANIMACIONES AEREAS
 animacion_aereo_desierto = extraer_imagenes(carpeta_desierto)
 animacion_aereo_bosque = extraer_imagenes(carpeta_bosque)
 animacion_aereo_tundra = extraer_imagenes(carpeta_tundra)
-
 animacion_moneda = extraer_imagenes(carpeta_moneda)
 
 #ANIMACIONES TERRESTRES
-arbol_bosque = pg.image.load("Imagenes/Bosque obs_terrestre.png").convert_alpha()
-arbol_tundra = pg.image.load("Imagenes/Tundra obs_terrestre.png").convert_alpha()
-arbol_desierto = pg.image.load("Imagenes/Desierto obs_terrestre.png").convert_alpha()
+arbol_bosque = pg.image.load("Clases/Imagenes/Bosque obs_terrestre.png").convert_alpha()
+arbol_tundra = pg.image.load("Clases/Imagenes/Tundra obs_terrestre.png").convert_alpha()
+arbol_desierto = pg.image.load("Clases/Imagenes/Desierto obs_terrestre.png").convert_alpha()
 
-rompible_desierto = pg.image.load("Imagenes/desierto_rompible.png").convert_alpha()
-rompible_bosque = pg.image.load("Imagenes/bosque_rompible.png").convert_alpha()
-rompible_tundra = pg.image.load("Imagenes/nieve_rompible.png").convert_alpha()
+rompible_desierto = pg.image.load("Clases/Imagenes/desierto_rompible.png").convert_alpha()
+rompible_bosque = pg.image.load("Clases/Imagenes/bosque_rompible.png").convert_alpha()
+rompible_tundra = pg.image.load("Clases/Imagenes/nieve_rompible.png").convert_alpha()
 
 def movimientoObstaculos(tematica) -> Factory:
     eleccion = Random.randint(0, 2)
@@ -192,7 +181,7 @@ def movimientoObstaculos(tematica) -> Factory:
             obs.alto_imagen = 24
             obs.eje_x_variacion_imagen = 0
             obs.eje_y_variacion_imagen = 0
-            obs.imagen = arbol_desierto #CAMBIAR
+            obs.imagen = arbol_desierto 
         else:
             obs.ancho_imagen = 25
             obs.alto_imagen = 25
@@ -204,11 +193,10 @@ posicion = 0
 cambios = False
 tematica = ""
 while jugando:
-    #########MEJORRA COOLDAWN AAAAAAAAAAAAAAAAA
     inicio_cooldown = pg.time.get_ticks()
     dragon.estado = "egg"
     dragon.vivo = True
-    dragon.x = 100 ##REINICIAR POSICION PARA APARICION EN TERRENO
+    dragon.x = 100 
     dragon.y = ALTO-175
     eventos = pg.event.get()
     teclas = pg.key.get_pressed()
@@ -232,17 +220,15 @@ while jugando:
             tematica = modificarTematica(btnCambiarTematica)
             fabrica, fondo, terreno = definirFabrica(tematica)
             ##############################################################
-            ##skinObstaculo = pg.transform.scale(skinObstaculo, (obstaculo.ancho+50, obstaculo.alto+50))
 
     dragon.actualizar()
     dragon.dibujar(VENTANA)
-    #########MEJORRA COOLDAWN AAAAAAAAAAAAAAAAA
     tiempo_actual = pg.time.get_ticks()
     tiempo_transcurrido = tiempo_actual - inicio_cooldown
     if tiempo_transcurrido > cooldown_salto and (posicion < len(animacion_inicial) - 1):
         posicion += 1
         dragon.animacion_egg = animacion_inicial[posicion]
-    elif tiempo_transcurrido > cooldown_salto and (posicion == 2): #MEJORAR AL PARECER SALTA LOS SPRITE DEL [2][AQUI SALTA DIRECTO AL 3]
+    elif tiempo_transcurrido > cooldown_salto and (posicion == 2):
         n = []
         n.append(animacion_inicial[posicion][3])
         dragon.animacion_egg = n
@@ -278,7 +264,7 @@ while jugando:
         dragon.agacharse(teclas)
         dragon.saltar(teclas, ALTO)
         terreno.dibujar(VENTANA)
-        dragon.actualizar()  # Actualiza la animación
+        dragon.actualizar()  
         moneda.actualizar()
         dragon.dibujar(VENTANA)
         moneda.dibujar(VENTANA)
@@ -300,8 +286,9 @@ while jugando:
 
         if moneda.rect.colliderect(dragon.rect):
             dragon.puntaje += 50
-            moneda.x = -moneda.ancho
+            moneda.x = - (moneda.ancho+50)
             diferenciaMonedas = Random.randint(2500, 3000)
+        
         if dragon.vivo:
             diferenciaObstaculos -= 1
             if diferenciaObstaculos <= 0:
@@ -334,7 +321,7 @@ while jugando:
         if (obstaculo.x > -obstaculo.ancho) and dragon.vivo:
             obstaculo.x -= velObstaculos
         
-        if (moneda.x > -moneda.ancho) and dragon.vivo and diferenciaMonedas < 1500:
+        if (moneda.x > -(moneda.ancho+50)) and dragon.vivo and diferenciaMonedas < 1500:
             moneda.x -= 0.7
 
         if disparo:
@@ -351,14 +338,12 @@ while jugando:
 
         if dragon.vida == 0 or not dragon.vivo:
             dragon.muerte()
-            #print("Perdiste")
             registro.setPuntajeActual(dragon.puntaje)
             if dragon.puntaje > registro.getPuntajeMax():
                 registro.setPuntajeMax(dragon.puntaje)
             mostrarPuntaje(VENTANA, registro.getPuntajeActual(), registro.getPuntajeMax())
             pg.display.flip()
             #PRESS ENTER PARA REINICIAR
-            #print(dragon.estado_muerte_fin)
             if dragon.estado_muerte_fin:
                 posicion = 0
                 jugar = False

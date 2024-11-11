@@ -24,11 +24,10 @@ class ObstaculoBosqueTerrestre(ObstaculoTerrestre):
     def actualizar(self):
         pass
     def dibujar(self, ventana):
-        pygame.draw.rect(ventana, self.diseño, self.rect)
         self.rect = pygame.Rect(self.x, self.y, self.ancho, self.alto)
         self.seleccion = random.randint(0, 1000)
         if self.imagen is not None:
-            desplazamiento_y = self.rect.height - self.imagen.get_height() - 30  # LOS 2 AJUSTE IMAGEN ENTRE LA HITBOX
+            desplazamiento_y = self.rect.height - self.imagen.get_height() - 30  
             desplazamiento_x = self.rect.width - self.imagen.get_width()
             ventana.blit(self.imagen, (self.rect.x + desplazamiento_x, self.rect.y + desplazamiento_y))
         if self.seleccion == 29 and not self.listo:
@@ -75,7 +74,6 @@ class ObstaculoBosqueAereo(ObstaculoAereo):
         self.rect.y = self.y
 
     def dibujar(self, ventana):
-        pygame.draw.rect(ventana, self.diseño, self.rect)
         self.rect = pygame.Rect(self.x, self.y, self.ancho, self.alto)
         self.seleccion = random.randint(0, 1000)
         if self.seleccion == 29 and not self.listo:

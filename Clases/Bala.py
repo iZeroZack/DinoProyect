@@ -9,7 +9,7 @@ class Bala(ObstaculoTerrestre):
         self.y = dragon.y 
         self.alto = 15
         self.ancho = 15
-        self.diseño = "black"
+        self.diseño = "red"
         self.rect = pygame.Rect(self.x, self.y, self.ancho, self.alto)
    
     def dibujar(self, ventana):

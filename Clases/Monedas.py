@@ -3,7 +3,6 @@ from Factory import Factory
 from Strategy import Strategy
 import copy
 import pygame
-import random
 
 class Monedas(ObstaculoAereo):
     def __init__(self, ALTO, strategy: Strategy):
@@ -35,11 +34,8 @@ class Monedas(ObstaculoAereo):
 
     def dibujar(self, ventana):
         self.wait -= 1
-        pygame.draw.rect(ventana, self.diseño, self.rect)
         self.rect = pygame.Rect(self.x, self.y, self.ancho, self.alto)
-        ##NO IMPRIME LA IMAGEN EN PANTALLA
         if self.imagen is not None:
-            #"si muestra diseño")
             ventana.blit(self.actual, (self.rect.x, self.rect.y))
         if self.wait > 0 and not self.listo:
             self.y, self.esDinamico = self.comportamiento.accionMoneda()

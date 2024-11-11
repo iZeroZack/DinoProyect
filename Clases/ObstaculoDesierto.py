@@ -22,12 +22,10 @@ class ObstaculoDesiertoTerrestre(ObstaculoTerrestre):
         self.eje_x_variacion_imagen = 0
         self.eje_y_variacion_imagen = 0
 
-
     def actualizar(self):
         pass
 
     def dibujar(self, ventana):
-        pygame.draw.rect(ventana, self.diseño, self.rect)
         self.rect = pygame.Rect(self.x, self.y, self.ancho, self.alto)
         self.seleccion = random.randint(0, 1000)
         if self.imagen is not None:
@@ -76,15 +74,12 @@ class ObstaculoDesiertoAereo(ObstaculoAereo):
         self.rect.y = self.y
 
     def dibujar(self, ventana):
-
-        pygame.draw.rect(ventana, self.diseño, self.rect)
         self.rect = pygame.Rect(self.x, self.y, self.ancho, self.alto)
         self.seleccion = random.randint(0, 1000)
         if self.estado is not None:
-            desplazamiento_y = self.rect.height - self.estado.get_height() + 10  # LOS 2 AJUSTE IMAGEN ENTRE LA HITBOX
+            desplazamiento_y = self.rect.height - self.estado.get_height() + 10  
             desplazamiento_x = self.rect.width - self.estado.get_width()
             ventana.blit(self.estado, (self.rect.x + desplazamiento_x, self.rect.y + desplazamiento_y))
-
 
         if self.seleccion == 29 and not self.listo:
             self.y = self.comportamiento.accionAerea()

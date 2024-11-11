@@ -1,5 +1,4 @@
 from Strategy import Strategy
-import pygame
 
 class StrategyDinamico(Strategy):
 
@@ -10,6 +9,5 @@ class StrategyDinamico(Strategy):
         return 500 - 60
     
     def accionMoneda(self) -> int:
-        #print("Cambio de Posicion")
         return 440, True
         

@@ -10,7 +10,7 @@ class Dragon:
         self.vida = 1
         self.GRAVEDAD = 0.3
         self.rect = None
-        self.rectNormal = pg.Rect(self.x, self.y, self.ancho, self.alto) #hitbox
+        self.rectNormal = pg.Rect(self.x, self.y, self.ancho, self.alto)
         self.rectAgachado = pg.Rect(self.x, self.y+16, self.ancho, self.alto-16)
         self.animaciones_move = animaciones_move
         self.animacion_jump = animacion_jump
@@ -24,16 +24,15 @@ class Dragon:
         self.intervalo_animacion = 100
         self.en_el_suelo = True
         self.fin_salto = False
-        self.cooldown_salto = 1000 ##COOLDAWN PARA EL SALTO
+        self.cooldown_salto = 1000 
         self.tiempo_ultimo_salto = 0
-        self.estado = "movimiento" #el estado de la animacion
+        self.estado = "movimiento" 
         self.animaciones = None
         self.tiempo_llegada_suelo = 0
         self.vivo = True
         self.estado_muerte_fin = False
         self.balas = 3
 
-#Modificar para salto tamvbien
     def actualizar(self):
         # Seleccionar la animación según el estado
         self.rect = self.rectNormal
@@ -42,7 +41,7 @@ class Dragon:
             self.intervalo_animacion = 100
         elif self.estado == "salto":
             self.animaciones = self.animacion_jump
-            self.intervalo_animacion = 200 ##CAMBIAR PARA MODIIFCAR EL INTERVALO DEL SALTO
+            self.intervalo_animacion = 200 
         elif self.estado == "agachado":
             self.animaciones = self.animacion_dash
             self.intervalo_animacion = 100
@@ -73,16 +72,14 @@ class Dragon:
         self.rect.y = self.y
 
     def dibujar(self, ventana):
-        desplazamiento_y = self.rect.height - self.diseño.get_height() +20  #LOS 2 AJUSTE IMAGEN ENTRE LA HITBOX
+        desplazamiento_y = self.rect.height - self.diseño.get_height() +20 
         desplazamiento_x = self.rect.width - self.diseño.get_width() +20
 
         ventana.blit(self.diseño, (self.rect.x + desplazamiento_x, self.rect.y + desplazamiento_y))
         if self.estado == "agachado":
             self.rect = self.rectAgachado
-            pg.draw.rect(ventana, self.hitbox_color, self.rect, 2)
         else:
             self.rect = self.rectNormal
-            pg.draw.rect(ventana, self.hitbox_color, self.rect, 2)
 
     def saltar(self, teclas, ALTO):
         tiempo_actual = pg.time.get_ticks()
@@ -124,4 +121,3 @@ class Dragon:
     def muerte(self):
         self.estado = "muerto"
         self.vivo = False
-        #print("si")

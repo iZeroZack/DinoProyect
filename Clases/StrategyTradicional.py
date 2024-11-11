@@ -1,5 +1,4 @@
 from Strategy import Strategy
-import pygame
 
 class StrategyTradicional(Strategy):
     
@@ -10,5 +9,4 @@ class StrategyTradicional(Strategy):
         return 400
 
     def accionMoneda(self) -> int:
-        #print("Misma Posicion")
         return 320, False
