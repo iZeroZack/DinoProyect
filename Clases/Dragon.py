@@ -48,7 +48,7 @@ class Dragon:
             self.intervalo_animacion = 100
         elif self.estado == "muerto":
             self.animaciones = self.animacion_dead
-            self.intervalo_animacion = 200
+            self.intervalo_animacion = 1000
         elif self.estado == "egg":
             self.animaciones = self.animacion_egg
             self.intervalo_animacion = 200

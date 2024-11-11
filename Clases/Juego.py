@@ -74,7 +74,7 @@ terreno = Terreno.Terreno(ANCHO, ALTO)
 def definirFabrica(tematica)->Factory:
     if tematica == "Bosque":
         fabrica = ObstaculoFactoryBosque()
-        fondo = pg.image.load("Clases/Imagenes/bosque.jpg").convert_alpha()
+        fondo = pg.image.load("Imagenes/bosque.jpg").convert_alpha()
         #skinObstaculo = pg.image.load("Imagenes/Bosque obs_terrestre.png").convert_alpha()
         terreno.diseño = "brown"
     elif tematica == "Desierto":
@@ -84,7 +84,7 @@ def definirFabrica(tematica)->Factory:
         terreno.diseño = "orange"
     elif tematica == "Tundra":
         fabrica = ObstaculoFactoryTundra()
-        fondo = pg.image.load("Clases/Imagenes/tundra.jpg").convert_alpha()
+        fondo = pg.image.load("Imagenes/tundra.jpg").convert_alpha()
         #skinObstaculo = pg.image.load("Imagenes/Tundra obs_terrestre.png").convert_alpha()
         terreno.diseño = "gray"
         colorLetra = "white"
@@ -114,7 +114,7 @@ disparo = False
 diferenciaObstaculos = 1500
 incrementarDifObs = 0
 velObstaculos = 0.9
-diferenciaMonedas =2500
+diferenciaMonedas =1500
 carpeta_desierto = "Imagenes/Animacion_desierto"
 carpeta_bosque = "Imagenes/Animacion_bosque"
 carpeta_tundra = "Imagenes/Animacion_tundra"
@@ -140,6 +140,10 @@ arbol_bosque = pg.image.load("Imagenes/Bosque obs_terrestre.png").convert_alpha(
 arbol_tundra = pg.image.load("Imagenes/Tundra obs_terrestre.png").convert_alpha()
 arbol_desierto = pg.image.load("Imagenes/Desierto obs_terrestre.png").convert_alpha()
 
+rompible_desierto = pg.image.load("Imagenes/desierto_rompible.png").convert_alpha()
+rompible_bosque = pg.image.load("Imagenes/bosque_rompible.png").convert_alpha()
+rompible_tundra = pg.image.load("Imagenes/nieve_rompible.png").convert_alpha()
+
 def movimientoObstaculos(tematica) -> Factory:
     eleccion = Random.randint(0, 2)
     if eleccion == 0:
@@ -157,30 +161,42 @@ def movimientoObstaculos(tematica) -> Factory:
     if tematica == "Tundra":
         if eleccion == 1:
             obs.animaciones = animacion_aereo_tundra
-        else:
+        elif eleccion == 0:
             obs.ancho_imagen = 16
             obs.alto_imagen = 24
             obs.eje_x_variacion_imagen = -5
             obs.eje_y_variacion_imagen = 0
             obs.imagen = arbol_tundra
+        else:
+            obs.ancho_imagen = 25
+            obs.alto_imagen = 25
+            obs.imagen = rompible_tundra
     elif tematica == "Bosque":
         if eleccion == 1:
             obs.animaciones = animacion_aereo_bosque
-        else:
+        elif eleccion == 0:
             obs.ancho_imagen = 24
             obs.alto_imagen = 24
             obs.eje_x_variacion_imagen = -15
             obs.eje_y_variacion_imagen = 0
             obs.imagen = arbol_bosque
+        else:
+            obs.ancho_imagen = 25
+            obs.alto_imagen = 25
+            obs.imagen = rompible_bosque
     else:
         if eleccion == 1:
             obs.animaciones = animacion_aereo_desierto
-        else:
+        elif eleccion == 0:
             obs.ancho_imagen = 15
             obs.alto_imagen = 24
             obs.eje_x_variacion_imagen = 0
             obs.eje_y_variacion_imagen = 0
-            obs.imagen = arbol_desierto
+            obs.imagen = arbol_desierto #CAMBIAR
+        else:
+            obs.ancho_imagen = 25
+            obs.alto_imagen = 25
+            obs.imagen = rompible_desierto
     return obs
 
 cooldown_salto = 5000
@@ -231,7 +247,6 @@ while jugando:
         n.append(animacion_inicial[posicion][3])
         dragon.animacion_egg = n
 
-
     if teclas[pg.K_SPACE] or teclas[pg.K_UP]:
         dragon.vida = 1
         dragon.puntaje = 0
@@ -246,7 +261,7 @@ while jugando:
         dragon.balas = 3
         diferenciaObstaculos = 1500
         velObstaculos = 0.7
-        diferenciaMonedas = 2500
+        diferenciaMonedas = 1500
 
     pg.display.update()
 
@@ -281,7 +296,7 @@ while jugando:
             disparo = False
 
         if obstaculo.rect.colliderect(dragon.rect):
-            dragon.vida = 1
+            dragon.vida -= 1
 
         if moneda.rect.colliderect(dragon.rect):
             dragon.puntaje += 50
@@ -305,7 +320,7 @@ while jugando:
         if dragon.puntaje % 500 == 0 and dragon.puntaje != 0 and cambios == False:
             cambios = True
 
-        diferenciaMonedas -= 1
+        diferenciaMonedas -= 0.7
         if diferenciaMonedas <= 0:
             moneda = monedaJuego.clonar()
             moneda.imagen = imagen_moneda
@@ -314,7 +329,7 @@ while jugando:
                 moneda.comportamiento = StrategyDinamico()
             else:
                 moneda.comportamiento = StrategyTradicional()
-            diferenciaMonedas = 2500
+            diferenciaMonedas = 1500
 
         if (obstaculo.x > -obstaculo.ancho) and dragon.vivo:
             obstaculo.x -= velObstaculos
