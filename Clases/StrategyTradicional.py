@@ -10,5 +10,5 @@ class StrategyTradicional(Strategy):
         return 400
 
     def accionMoneda(self) -> int:
-        print("Misma Posicion")
+        #print("Misma Posicion")
         return 320, False

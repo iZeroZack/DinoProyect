@@ -124,4 +124,4 @@ class Dragon:
     def muerte(self):
         self.estado = "muerto"
         self.vivo = False
-        print("si")
+        #print("si")

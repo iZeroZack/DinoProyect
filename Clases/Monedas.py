@@ -18,15 +18,29 @@ class Monedas(ObstaculoAereo):
         self.imagen = None
         self.wait = 300
         self.rect = pygame.Rect(self.x, self.y, self.ancho, self.alto)
-   
+        self.tiempo_ultimo_frame = 0
+        self.intervarlo_animacion = 2
+        self.frame_actual = 0
+        self.actual = None
+
+    def actualizar(self):
+        tiempo_actual = pygame.time.get_ticks()
+        if tiempo_actual - self.tiempo_ultimo_frame > self.intervarlo_animacion:
+
+            self.frame_actual +=1
+            if self.frame_actual > len(self.imagen)-1:
+                self.frame_actual = 0
+        self.actual = self.imagen[self.frame_actual]
+        self.tiempo_ultimo_frame = tiempo_actual
+
     def dibujar(self, ventana):
         self.wait -= 1
         pygame.draw.rect(ventana, self.diseño, self.rect)
         self.rect = pygame.Rect(self.x, self.y, self.ancho, self.alto)
         ##NO IMPRIME LA IMAGEN EN PANTALLA
         if self.imagen is not None:
-            print("si muestra diseño")
-            ventana.blit(self.imagen[0], (self.rect.x, self.rect.y))
+            #"si muestra diseño")
+            ventana.blit(self.actual, (self.rect.x, self.rect.y))
         if self.wait > 0 and not self.listo:
             self.y, self.esDinamico = self.comportamiento.accionMoneda()
             self.listo = True
